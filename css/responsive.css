@@ -1,0 +1,49 @@
+/* ==========================================================================
+   RESPONSIVE
+   ========================================================================== */
+@media (max-width: 900px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .sidebar-toggle { display: block; }
+  .main-content { margin-left: 0; }
+  .top-bar { margin-left: 0; }
+}
+@media (max-width: 640px) {
+  .main-content { padding: 0 12px 40px; }
+  .top-bar { padding: 8px 12px; }
+  .controls-row { gap: 6px; }
+  .phase-hdr { padding: 12px 14px; }
+  .phase-hdr .label { font-size: 0.95rem; }
+  .page-header h1 { font-size: 1.3rem; }
+  .phase-progress button { font-size: 0.65rem; padding: 5px 2px; }
+  /* Better touch targets on mobile */
+  .toggle-group button { padding: 8px 16px; min-height: 40px; }
+  .role-select, .jurisdiction-select { min-height: 40px; padding: 8px 14px; }
+  .sidebar a { padding: 10px 16px 10px 24px; min-height: 40px; }
+  .sidebar a.sub { padding-left: 38px; }
+  .phase-hdr { min-height: 48px; }
+  .bookmark-btn { font-size: 1.2rem; padding: 8px; }
+  /* Flowchart scroll hint */
+  .flowchart-container { padding: 12px 8px; }
+  /* Table responsive */
+  table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+}
+
+/* Safe area support for notched devices */
+@supports (padding: env(safe-area-inset-bottom)) {
+  .sidebar { padding-bottom: calc(80px + env(safe-area-inset-bottom)); }
+  .sidebar-toggle { bottom: calc(20px + env(safe-area-inset-bottom)); left: calc(20px + env(safe-area-inset-left)); }
+  .main-content { padding-bottom: calc(60px + env(safe-area-inset-bottom)); }
+}
+
+/* Print styles */
+@media print {
+  .sidebar, .sidebar-toggle, .sidebar-overlay, .top-bar, .flowchart-container,
+  .bookmark-btn, .phase-notes { display: none !important; }
+  .main-content { margin-left: 0; max-width: 100%; }
+  .phase-tab { display: block !important; }
+  .section-block[data-collapsible].collapsed > .collapsible-content {
+    max-height: none !important;
+    opacity: 1;
+  }
+}

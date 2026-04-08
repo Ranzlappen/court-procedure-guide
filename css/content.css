@@ -1,0 +1,321 @@
+/* ==========================================================================
+   TABBED PHASE SYSTEM
+   ========================================================================== */
+.phase-tab {
+  display: none;
+  animation: fadeTab 0.3s ease;
+}
+.phase-tab.active {
+  display: block;
+}
+@keyframes fadeTab {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Phase tab header (replaces the clickable accordion header for top-level phases) */
+.phase-tab-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 0 12px;
+  border-bottom: 2px solid var(--accent);
+  margin-bottom: 16px;
+}
+.phase-tab-header .icon { font-size: 1.3rem; flex-shrink: 0; }
+.phase-tab-header .label {
+  flex: 1;
+  font-weight: 700;
+  font-size: 1.15rem;
+}
+.phase-tab-header .phase-num {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+}
+
+/* Per-phase notes panel */
+.phase-notes {
+  margin-top: 20px;
+  padding: 14px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.phase-notes summary {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--accent);
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.phase-notes summary::-webkit-details-marker { display: none; }
+.phase-notes summary::before { content: '\270D\FE0F'; }
+.phase-notes summary::after {
+  content: '\25B6';
+  font-size: 0.6rem;
+  margin-left: auto;
+  transition: transform 0.2s ease;
+}
+.phase-notes[open] summary::after { transform: rotate(90deg); }
+.phase-notes textarea {
+  width: 100%;
+  min-height: 80px;
+  margin-top: 8px;
+  padding: 10px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 0.85rem;
+  line-height: 1.6;
+  resize: vertical;
+}
+.phase-notes textarea:focus { outline: 2px solid var(--accent); }
+
+/* ==========================================================================
+   CONTENT CARDS & ACCORDIONS
+   ========================================================================== */
+.page-header {
+  padding: 40px 0 24px 0;
+  text-align: center;
+}
+.page-header h1 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+.page-header .subtitle {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+
+/* Phase container */
+.phase {
+  margin-bottom: 20px;
+}
+.phase-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  transition: box-shadow var(--transition);
+}
+.phase-card:hover { box-shadow: var(--shadow-hover); }
+
+/* Phase header (main accordion trigger) */
+.phase-hdr {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  cursor: pointer;
+  user-select: none;
+  transition: background var(--transition);
+  position: relative;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.phase-hdr:hover { background: var(--bg-card-hover); }
+.phase-hdr .icon { font-size: 1.3rem; flex-shrink: 0; }
+.phase-hdr .label {
+  flex: 1;
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+.phase-hdr .phase-num {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+}
+.phase-hdr .chevron {
+  width: 20px; height: 20px;
+  transition: transform 0.25s ease;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+.phase-card.open > .phase-hdr .chevron { transform: rotate(180deg); }
+
+/* Phase body (collapsible) */
+.phase-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+}
+.phase-body-inner {
+  padding: 0 20px 20px;
+  border-top: 1px solid var(--border);
+}
+
+/* Sub-phase accordion */
+.sub-phase {
+  margin-top: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.sub-hdr {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  cursor: pointer;
+  user-select: none;
+  background: var(--bg-surface);
+  transition: background var(--transition);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+.sub-hdr:hover { background: var(--bg-card-hover); }
+.sub-hdr .chevron {
+  width: 16px; height: 16px;
+  transition: transform 0.25s ease;
+  color: var(--text-muted);
+  margin-left: auto;
+  flex-shrink: 0;
+}
+.sub-phase.open > .sub-hdr .chevron { transform: rotate(180deg); }
+.sub-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+}
+.sub-body-inner {
+  padding: 12px 16px 16px;
+  border-top: 1px solid var(--border);
+}
+
+/* ==========================================================================
+   TEMPLATE SECTIONS (Recognition Cues, Judge, Prosecution, etc.)
+   ========================================================================== */
+.section-block {
+  margin-top: 16px;
+  padding: 14px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  position: relative;
+}
+.section-block.recognition {
+  background: var(--clr-observer-bg);
+  border-color: rgba(196,181,253,0.2);
+}
+.section-block.judge {
+  background: var(--clr-judge-bg);
+  border-color: rgba(96,165,250,0.2);
+}
+.section-block.prosecution {
+  background: var(--clr-prosecution-bg);
+  border-color: rgba(110,231,183,0.2);
+}
+.section-block.defense {
+  background: var(--clr-defense-bg);
+  border-color: rgba(253,186,116,0.2);
+}
+.section-block.objection {
+  background: var(--clr-objection-bg);
+  border-color: rgba(252,165,165,0.2);
+}
+.section-block.evidence {
+  background: rgba(96,165,250,0.04);
+  border-color: rgba(96,165,250,0.15);
+}
+.section-block.observer {
+  background: var(--clr-observer-bg);
+  border-color: rgba(196,181,253,0.15);
+}
+.section-block.checklist {
+  background: rgba(78,205,196,0.06);
+  border-color: rgba(78,205,196,0.2);
+}
+.section-block.pitfalls {
+  background: rgba(252,165,165,0.04);
+  border-color: rgba(252,165,165,0.15);
+}
+.section-block .sec-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.section-block.judge .sec-title { color: var(--clr-judge); }
+.section-block.prosecution .sec-title { color: var(--clr-prosecution); }
+.section-block.defense .sec-title { color: var(--clr-defense); }
+.section-block.objection .sec-title { color: var(--clr-objection); }
+.section-block.recognition .sec-title { color: var(--clr-observer); }
+.section-block.evidence .sec-title { color: var(--primary); }
+.section-block.observer .sec-title { color: var(--clr-observer); }
+.section-block.checklist .sec-title { color: var(--accent); }
+.section-block.pitfalls .sec-title { color: var(--clr-objection); }
+
+/* ==========================================================================
+   COLLAPSIBLE SECTION-BLOCKS (details/summary)
+   ========================================================================== */
+.section-block[data-collapsible] {
+  padding: 0;
+}
+.section-block[data-collapsible] > .sec-title {
+  padding: 14px;
+  margin-bottom: 0;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.section-block[data-collapsible] > .sec-title::after {
+  content: '\25BC';
+  font-size: 0.6rem;
+  margin-left: auto;
+  transition: transform 0.25s ease;
+  display: inline-block;
+}
+.section-block[data-collapsible].collapsed > .sec-title::after {
+  transform: rotate(-90deg);
+}
+.section-block[data-collapsible] > .collapsible-content {
+  padding: 0 14px 14px;
+  transition: max-height 0.3s ease, opacity 0.2s ease;
+  overflow: hidden;
+}
+.section-block[data-collapsible].collapsed > .collapsible-content {
+  max-height: 0 !important;
+  opacity: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+/* Bookmark button on section blocks */
+.bookmark-btn {
+  position: absolute;
+  top: 10px; right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  opacity: 0.4;
+  transition: opacity var(--transition), transform var(--transition);
+  color: var(--text-muted);
+  padding: 4px;
+  line-height: 1;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  z-index: 2;
+}
+.bookmark-btn:hover { opacity: 0.8; }
+.bookmark-btn.bookmarked {
+  opacity: 1;
+  color: var(--accent);
+  transform: scale(1.15);
+}

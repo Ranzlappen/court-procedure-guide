@@ -1,0 +1,179 @@
+/* ==========================================================================
+   TYPOGRAPHY & LISTS
+   ========================================================================== */
+h2 { font-size: 1.2rem; color: var(--accent); margin: 24px 0 8px; }
+h3 { font-size: 1rem; color: var(--primary); margin: 16px 0 6px; }
+
+p { margin: 8px 0; }
+
+ul, ol { padding-left: 20px; margin: 6px 0 12px; }
+li { margin-bottom: 5px; }
+
+ul { list-style: none; }
+ul li { position: relative; padding-left: 16px; }
+ul li::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 10px;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+ol { list-style: none; counter-reset: step; padding-left: 0; }
+ol li { counter-increment: step; padding-left: 32px; position: relative; }
+ol li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0; top: 2px;
+  width: 22px; height: 22px;
+  background: var(--primary);
+  color: #fff;
+  border-radius: 50%;
+  font-size: 0.72rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+strong { color: var(--text); }
+
+/* Inline glossary terms */
+.term {
+  border-bottom: 1px dashed var(--accent);
+  cursor: help;
+  color: var(--accent);
+}
+
+/* Tables for quick reference */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+  font-size: 0.85rem;
+}
+th, td {
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  text-align: left;
+}
+th {
+  background: var(--bg-surface);
+  font-weight: 700;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+/* Mermaid diagrams */
+.mermaid-wrap {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px;
+  margin: 10px 0;
+  overflow-x: auto;
+}
+
+/* Decision tree fallback (text-based) */
+.decision-tree {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin: 10px 0;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  line-height: 1.8;
+  white-space: pre-wrap;
+}
+
+/* Search highlight */
+mark, .search-highlight {
+  background: rgba(78,205,196,0.3);
+  color: var(--text);
+  padding: 1px 2px;
+  border-radius: 2px;
+}
+
+/* Glossary modal */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.6);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+}
+.modal-overlay.show { display: flex; }
+.modal {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+.modal h3 { color: var(--accent); margin: 0 0 8px; }
+.modal .close-btn {
+  float: right;
+  background: none; border: none;
+  color: var(--text-muted);
+  font-size: 1.4rem;
+  cursor: pointer;
+  line-height: 1;
+}
+
+/* Role-based visibility */
+[data-role="judge"] { border-left: 3px solid var(--clr-judge); }
+[data-role="prosecution"] { border-left: 3px solid var(--clr-prosecution); }
+[data-role="defense"] { border-left: 3px solid var(--clr-defense); }
+[data-role="observer"] { border-left: 3px solid var(--clr-observer); }
+
+/* Case type visibility */
+.criminal-only, .civil-only { display: block; }
+body.case-civil .criminal-only { display: none; }
+body.case-criminal .civil-only { display: none; }
+
+/* Role filter: dim non-selected role blocks when a specific role is active */
+body.role-judge .section-block:not(.judge):not(.objection):not(.evidence):not(.recognition):not(.observer):not(.checklist):not(.pitfalls) { opacity: 0.5; }
+body.role-prosecution .section-block:not(.prosecution):not(.objection):not(.evidence):not(.recognition):not(.observer):not(.checklist):not(.pitfalls) { opacity: 0.5; }
+body.role-defense .section-block:not(.defense):not(.objection):not(.evidence):not(.recognition):not(.observer):not(.checklist):not(.pitfalls) { opacity: 0.5; }
+
+/* Jurisdiction filter */
+body.jurisdiction-federal .state-note { opacity: 0.35; font-style: italic; }
+body.jurisdiction-state .federal-note { opacity: 0.35; font-style: italic; }
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 32px 20px;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  border-top: 1px solid var(--border);
+  margin-top: 40px;
+}
+.disclaimer-footer { text-align: left; }
+.disclaimer-box {
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  font-size: 0.88rem;
+  line-height: 1.7;
+}
+.disclaimer-box strong { color: #f87171; }
+.disclaimer-box p { margin: 8px 0 0; }
+
+/* Role highlight (when a specific role is selected) */
+.role-highlight {
+  box-shadow: 0 0 0 2px var(--accent), 0 2px 8px rgba(94, 234, 212, 0.15);
+  border-radius: var(--radius);
+}

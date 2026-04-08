@@ -1,0 +1,182 @@
+
+<!-- =====================================================================
+     PHASE 5: APPEALS
+     ===================================================================== -->
+<div class="phase phase-tab" id="phase5">
+<div class="phase-card">
+  <div class="phase-hdr" onclick="togglePhase(this)">
+    <span class="icon">📤</span>
+    <div>
+      <div class="phase-num">Phase 5</div>
+      <div class="label">Appeals</div>
+    </div>
+    <svg class="chevron" viewBox="0 0 20 20" fill="currentColor"><path d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
+  </div>
+  <div class="phase-body">
+    <div class="phase-body-inner">
+
+      <div class="section-block recognition">
+        <div class="sec-title">👁️ Recognition Cues — What You See/Hear Right Now</div>
+        <p><strong>On court cam:</strong> Appellate courts look very different from trial courts. There is no jury, no witnesses, and no evidence presentation. A panel of judges (usually 3) sit elevated. Attorneys stand at a single podium and argue legal issues. The judges interrupt frequently with questions.</p>
+        <p><strong>Audio cues:</strong> "May it please the Court…" "Counsel, are you arguing that the trial court erred in…?" "What is your standard of review?" Judges ask pointed, technical questions.</p>
+        <p><strong>Visual cues:</strong> Formal wood-paneled courtroom. Judges in robes. No defendant (usually — they may attend but don't speak). Attorneys stand at a podium with a timer light (green = go, yellow = wrapping up, red = stop).</p>
+      </div>
+
+      <div class="section-block" style="background:transparent;border:none;padding:0;">
+        <h3>Overview &amp; Purpose</h3>
+        <p>An appeal asks a higher court to review the lower court's decision for <strong>legal errors</strong> — NOT to retry the facts. The appellate court does not hear new witnesses or consider new evidence. It reads the trial transcript, reviews the briefs (written legal arguments), and may hear oral argument. The appellate court can affirm (uphold), reverse (overturn), vacate (cancel), or remand (send back) the decision. Appeals are limited to issues that were <strong>preserved</strong> — meaning the attorney objected at trial. Issues not objected to are reviewed only for <span class="term" data-term="plain-error">plain error</span> (a very high standard).</p>
+      </div>
+
+      <div class="section-block judge" data-role="judge">
+        <div class="sec-title">⚖️ Appellate Judges</div>
+        <p><strong>Panel composition:</strong></p>
+        <ul>
+          <li>Federal: 3-judge panel from the Circuit Court of Appeals. May be heard <span class="term" data-term="en-banc">en banc</span> (all judges) for important cases.</li>
+          <li>State: varies — some use 3-judge panels, others have single appellate judges for certain cases</li>
+          <li>Supreme Court (U.S. or state): 9 justices (U.S.), varies by state. Hearing is discretionary (requires <span class="term" data-term="cert">certiorari</span>)</li>
+        </ul>
+        <p><strong>Standards of review (how much deference the appellate court gives the trial court):</strong></p>
+        <ul>
+          <li><strong>De novo:</strong> No deference. Appellate court decides the legal question fresh. Used for questions of law (e.g., jury instructions, statutory interpretation).</li>
+          <li><strong>Abuse of discretion:</strong> High deference. Trial court's decision stands unless it was clearly unreasonable. Used for evidentiary rulings, sentencing within guidelines.</li>
+          <li><strong>Clearly erroneous:</strong> Moderate deference. Used for factual findings by the trial judge (bench trials). Overturned only if the appellate court is "left with a definite and firm conviction that a mistake has been made."</li>
+          <li><strong>Plain error:</strong> Very high standard. Used for issues not objected to at trial. Must show: (1) error, (2) that is plain/obvious, (3) that affects substantial rights, and (4) that seriously affects the fairness of the proceedings.</li>
+        </ul>
+      </div>
+
+      <div class="section-block prosecution" data-role="prosecution">
+        <div class="sec-title">📋 Prosecution / Plaintiff (Appellee — Respondent)</div>
+        <ul>
+          <li>File a response brief arguing the trial court was correct</li>
+          <li>Argue that any errors were harmless (did not affect the outcome)</li>
+          <li>Argue that issues were waived (not properly preserved at trial)</li>
+          <li>In criminal cases: the prosecution generally CANNOT appeal an acquittal (double jeopardy). They CAN appeal a sentence they believe is too lenient in some circumstances.</li>
+        </ul>
+      </div>
+
+      <div class="section-block defense" data-role="defense">
+        <div class="sec-title">🛡️ Defense (Appellant)</div>
+        <ul>
+          <li>File a notice of appeal within the deadline (30 days in federal criminal cases, FRAP Rule 4; 30 days in federal civil cases)</li>
+          <li>File an opening brief identifying specific errors and arguing how they affected the outcome</li>
+          <li>Common grounds for appeal: improper jury instructions, erroneous admission/exclusion of evidence, prosecutorial misconduct, ineffective assistance of counsel, insufficient evidence, sentencing errors</li>
+          <li>Request oral argument (not guaranteed — the court may decide on briefs alone)</li>
+        </ul>
+      </div>
+
+      <div class="section-block objection">
+        <div class="sec-title">🚩 Common Appellate Issues</div>
+        <table>
+          <tr><th>Issue</th><th>Standard of Review</th><th>Example</th><th>Typical Outcome</th></tr>
+          <tr>
+            <td>Improper jury instructions</td>
+            <td>De novo</td>
+            <td>"The trial court failed to instruct on the lesser included offense of manslaughter despite evidence supporting it."</td>
+            <td>If the error affected the verdict: reversed and remanded for new trial. If harmless: affirmed.</td>
+          </tr>
+          <tr>
+            <td>Erroneous admission of evidence</td>
+            <td>Abuse of discretion</td>
+            <td>"The trial court admitted highly prejudicial prior bad act evidence under FRE 404(b) without proper limiting instruction."</td>
+            <td>Reversed only if the appellate court finds the error was not harmless — i.e., there's a reasonable probability the outcome would have been different.</td>
+          </tr>
+          <tr>
+            <td>Ineffective assistance of counsel</td>
+            <td>Mixed (law de novo, facts clearly erroneous)</td>
+            <td>"Trial counsel failed to investigate an alibi witness, failed to object to hearsay, and failed to file a suppression motion." (<em>Strickland v. Washington</em>, 1984)</td>
+            <td>Must show: (1) counsel's performance was deficient (below professional norms) AND (2) there is a reasonable probability the result would have been different. Both prongs required. Very difficult to win.</td>
+          </tr>
+          <tr>
+            <td>Prosecutorial misconduct</td>
+            <td>Various</td>
+            <td>"The prosecutor made inflammatory statements during closing, commented on the defendant's silence, and introduced evidence excluded by the court's order."</td>
+            <td>If preserved (objected to): harmless error analysis. If not preserved: plain error review. Reversal more likely if multiple instances of misconduct.</td>
+          </tr>
+          <tr>
+            <td>Sentencing error</td>
+            <td>Abuse of discretion / procedural reasonableness</td>
+            <td>"The trial court applied an incorrect guideline enhancement, resulting in a sentence 5 years above the correct range."</td>
+            <td>If procedural error (wrong calculation): usually remanded for resentencing. If substantive error (unreasonable sentence): harder to win on appeal.</td>
+          </tr>
+          <tr>
+            <td>Sufficiency of evidence</td>
+            <td>Very deferential (could any rational jury have found guilt)</td>
+            <td>"No reasonable jury could have found the defendant guilty beyond a reasonable doubt based on the evidence presented."</td>
+            <td>Viewing evidence in the light most favorable to the verdict. Rarely reversed — the standard is extremely high.</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="section-block evidence">
+        <div class="sec-title">📜 Evidence Rules on Appeal</div>
+        <ul>
+          <li><strong>No new evidence.</strong> The appellate court reviews only the trial record (transcript, exhibits, motions, rulings). No new witnesses, no new documents.</li>
+          <li><strong>Exception — newly discovered evidence:</strong> In rare cases, new evidence (e.g., DNA exoneration) can be raised through a separate post-conviction motion (habeas corpus, FRCP Criminal Rule 33(b)), NOT through a direct appeal.</li>
+          <li><strong>Harmless error doctrine:</strong> Even if the trial court made an error, the conviction/judgment is affirmed if the error was harmless — meaning it did not affect the outcome. In criminal cases, the government must prove harmlessness beyond a reasonable doubt for constitutional errors. (<em>Chapman v. California</em>, 1967)</li>
+          <li><strong>Structural error (rare):</strong> Some errors are so fundamental that they are never harmless — e.g., complete denial of counsel, biased judge, racial discrimination in jury selection. These always require reversal.</li>
+        </ul>
+      </div>
+
+      <div class="section-block" style="background:transparent;border:none;padding:0;">
+        <div class="sec-title" style="color:var(--accent);">🔀 Appellate Outcomes</div>
+        <div class="decision-tree">Appeal
+├─ AFFIRMED — Trial court's decision stands. Case is over (unless further appeal is possible).
+├─ REVERSED — Trial court's decision is overturned.
+│  ├─ Reversed and remanded — Sent back for new trial or new proceedings
+│  ├─ Reversed with instructions — Sent back with specific directions (e.g., "enter judgment for the defendant")
+│  └─ Reversed outright — Judgment vacated, defendant released (rare in criminal cases)
+├─ VACATED — Decision is cancelled.
+│  └─ Usually remanded for further proceedings
+├─ REMANDED — Sent back to the trial court for specific action
+│  └─ May be for resentencing, new trial, or further findings
+├─ Further appeal possible
+│  ├─ From Circuit Court → petition for certiorari to U.S. Supreme Court (granted in ~1% of cases)
+│  └─ From state supreme court → U.S. Supreme Court if federal constitutional issue exists
+└─ Post-conviction relief (separate from direct appeal)
+   ├─ Habeas corpus (federal) — 28 U.S.C. § 2254 (state prisoners) or § 2255 (federal prisoners)
+   └─ Actual innocence claims, newly discovered evidence, constitutional violations</div>
+      </div>
+
+      <div class="section-block observer">
+        <div class="sec-title">👁️ Sensory &amp; Social Expectations (Gallery / Court Cam)</div>
+        <ul>
+          <li><strong>Duration:</strong> Oral arguments are typically 15-30 minutes per side. Some courts allow more for complex cases.</li>
+          <li><strong>What you see:</strong> Very different from trial. No drama, no witnesses, no emotional testimony. It is a focused legal discussion between lawyers and judges. Highly intellectual.</li>
+          <li><strong>Noise level:</strong> Quiet except for the speaking attorney and questioning judges. Judges may interrupt frequently.</li>
+          <li><strong>Emotional tone:</strong> Professional and restrained. The argument is about law, not facts or emotion.</li>
+          <li><strong>Decision timing:</strong> The court does NOT usually decide during oral argument. The written opinion comes weeks to months later.</li>
+          <li><strong>Gallery note:</strong> Appellate arguments are open to the public but rarely well-attended except for high-profile cases. They are often livestreamed.</li>
+        </ul>
+      </div>
+
+      <div class="section-block checklist">
+        <div class="sec-title">✅ Observer Notes — What to Watch For</div>
+        <ul>
+          <li>Which issues does the court focus on? (Judges' questions reveal what concerns them.)</li>
+          <li>Does one side get tougher questions? (This can hint at the court's inclination.)</li>
+          <li>"Hot bench" (many questions) vs "cold bench" (few questions): a hot bench usually means the judges have strong views. A cold bench may mean the case is straightforward or the court has already decided.</li>
+          <li>Does the court ask about remedy (what happens if they find error)? This often suggests they are leaning toward reversal.</li>
+          <li>The red/yellow/green podium light system: Red means stop. Judges may grant extra time but attorneys should respect the clock.</li>
+        </ul>
+      </div>
+
+      <div class="section-block pitfalls">
+        <div class="sec-title">⚠️ Common Pitfalls &amp; Red Flags</div>
+        <ul>
+          <li><strong>Missing the appeal deadline:</strong> This is FATAL. In federal criminal cases, the notice of appeal must be filed within 14 days of judgment (FRAP Rule 4(b)). In civil cases, 30 days. Missing it permanently waives the right to appeal.</li>
+          <li><strong>Failure to preserve issues:</strong> If the trial attorney did not object at the right time, the issue is reviewed only for "plain error" — a much harder standard to meet.</li>
+          <li><strong>Raising too many issues:</strong> Appellate courts are more persuaded by 2-3 strong arguments than by 15 weak ones. Quality over quantity.</li>
+          <li><strong>Confusing appeal with retrial:</strong> The appellate court does NOT retry the case. They review the record for legal errors. Arguing "the jury was wrong about the facts" almost never works.</li>
+          <li><strong>Ineffective assistance claims:</strong> These are extremely hard to win. Courts give great deference to trial strategy. (<em>Strickland v. Washington</em>)</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</div>
+</div>
+<details class="phase-notes">
+  <summary>My Notes — Phase 5: Appeals</summary>
+  <textarea data-phase="phase5" placeholder="Type your personal notes for Phase 5: Appeals here..."></textarea>
+</details>
+<!-- END PHASE 5 -->

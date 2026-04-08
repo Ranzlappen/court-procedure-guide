@@ -1,0 +1,46 @@
+/* ==========================================================================
+   SVG FLOWCHART
+   ========================================================================== */
+.flowchart-container {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  margin-bottom: 20px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.flowchart-container svg {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+  height: auto;
+}
+.flowchart-container svg .fc-node {
+  cursor: pointer;
+  transition: filter 0.2s ease;
+}
+.flowchart-container svg .fc-node:hover {
+  filter: brightness(1.2);
+}
+.flowchart-container svg .fc-node.fc-active rect,
+.flowchart-container svg .fc-node.fc-active ellipse {
+  stroke-width: 3;
+  stroke: var(--accent);
+}
+.flowchart-container svg text {
+  font-family: var(--font);
+  font-size: 11px;
+  fill: var(--text);
+  pointer-events: none;
+}
+.flowchart-container svg .fc-arrow {
+  fill: none;
+  stroke: var(--text-muted);
+  stroke-width: 2;
+  marker-end: url(#arrowhead);
+}
+.flowchart-container svg .fc-label {
+  font-size: 9px;
+  fill: var(--text-muted);
+}

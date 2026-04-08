@@ -1,0 +1,43 @@
+<button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle navigation">☰</button>
+
+<!-- =====================================================================
+     TOP BAR: Disclaimer, Controls, Search, Phase Progress
+     ===================================================================== -->
+<div class="top-bar" id="topBar">
+  <div class="disclaimer">
+    ⚠️ <strong>Legal Disclaimer:</strong> This guide is for <strong>informational and educational purposes only</strong>. It is <strong>not legal advice</strong>. Court procedures vary by jurisdiction. Always consult a licensed attorney for legal matters.
+  </div>
+  <div class="controls-row">
+    <div class="toggle-group" id="caseToggle">
+      <button class="active" data-case="criminal">Criminal</button>
+      <button data-case="civil">Civil</button>
+    </div>
+    <select class="role-select" id="roleSelect">
+      <option value="observer" selected>👁️ Observer / Gallery</option>
+      <option value="judge">⚖️ Judge</option>
+      <option value="prosecution">📋 Prosecution / Plaintiff</option>
+      <option value="defense">🛡️ Defense Attorney</option>
+      <option value="defendant">👤 Defendant</option>
+      <option value="witness">🗣️ Witness</option>
+    </select>
+    <select class="jurisdiction-select" id="jurisdictionSelect">
+      <option value="both" selected>🏛️ All Jurisdictions</option>
+      <option value="federal">Federal</option>
+      <option value="state">State</option>
+    </select>
+    <div class="toggle-group" id="themeToggle">
+      <button class="active" data-theme="dark">🌙 Dark</button>
+      <button data-theme="light">☀️ Light</button>
+    </div>
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Search the guide…" aria-label="Search">
+      <button class="clear-search" id="clearSearch">✕</button>
+    </div>
+  </div>
+  <div class="phase-progress" id="phaseProgress">
+    <button data-target="phase1" class="active">1. Initiation</button>
+    <button data-target="phase2">2. Pre-Trial</button>
+    <button data-target="phase3">3. Trial</button>
+    <button data-target="phase4">4. Resolution</button>
+    <button data-target="phase5">5. Appeals</button>
+  </div>
