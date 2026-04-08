@@ -1,0 +1,99 @@
+/* ==========================================================================
+   SIDEBAR PERSONAL FEATURES (collapsible panels)
+   ========================================================================== */
+.sidebar-panel {
+  border-top: 1px solid var(--border);
+}
+.sidebar-panel summary {
+  padding: 8px 16px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.sidebar-panel summary::-webkit-details-marker { display: none; }
+.sidebar-panel summary::after {
+  content: '\25B6';
+  font-size: 0.55rem;
+  margin-left: auto;
+  transition: transform 0.2s ease;
+}
+.sidebar-panel[open] summary::after { transform: rotate(90deg); }
+.sidebar-panel .panel-body {
+  padding: 4px 16px 12px;
+}
+
+/* Progress tracker */
+.progress-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.progress-list li {
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  padding: 3px 0;
+}
+.progress-list li::before { display: none; }
+.progress-list input[type="checkbox"] {
+  accent-color: var(--accent);
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
+}
+.progress-bar-mini {
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  margin-top: 8px;
+  overflow: hidden;
+}
+.progress-bar-mini .fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+/* Bookmarks list in sidebar */
+.bookmarks-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 200px;
+  overflow-y: auto;
+}
+.bookmarks-list li {
+  padding: 0;
+  margin: 0;
+}
+.bookmarks-list li::before { display: none; }
+.bookmarks-list a {
+  display: block;
+  padding: 4px 0;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.78rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.bookmarks-list a:hover { color: var(--accent); }
+.bookmarks-empty {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-style: italic;
+}

@@ -1,0 +1,58 @@
+
+<!-- =====================================================================
+     SIDEBAR NAVIGATION
+     ===================================================================== -->
+<div class="layout">
+<nav class="sidebar" id="sidebar">
+  <div style="padding:12px 20px;font-weight:700;color:var(--accent);font-size:0.95rem;">Court Algorithm Guide</div>
+  <div class="sidebar-title">Phases</div>
+  <a href="#phase1">1. Case Initiation</a>
+  <a href="#phase2">2. Pre-Trial</a>
+  <a href="#p2-arraignment" class="sub">Arraignment</a>
+  <a href="#p2-discovery" class="sub">Discovery</a>
+  <a href="#p2-motions" class="sub">Pre-Trial Motions</a>
+  <a href="#p2-plea" class="sub">Plea Bargaining</a>
+  <a href="#p2-conference" class="sub">Pre-Trial Conference</a>
+  <a href="#phase3">3. Trial</a>
+  <a href="#p3-voir-dire" class="sub">Jury Selection</a>
+  <a href="#p3-openings" class="sub">Opening Statements</a>
+  <a href="#p3-case-in-chief" class="sub">Case-in-Chief</a>
+  <a href="#p3-direct" class="sub">Direct Examination</a>
+  <a href="#p3-cross" class="sub">Cross-Examination</a>
+  <a href="#p3-defense-case" class="sub">Defense Case</a>
+  <a href="#p3-closings" class="sub">Closing Arguments</a>
+  <a href="#p3-instructions" class="sub">Jury Instructions</a>
+  <a href="#p3-deliberation" class="sub">Deliberation &amp; Verdict</a>
+  <a href="#phase4">4. Sentencing &amp; Resolution</a>
+  <a href="#p4-sentencing" class="sub">Sentencing Hearing</a>
+  <a href="#p4-civil-judgment" class="sub">Civil Judgment</a>
+  <a href="#phase5">5. Appeals</a>
+  <a href="#p5-notice" class="sub">Notice of Appeal</a>
+  <a href="#p5-briefing" class="sub">Briefing</a>
+  <a href="#p5-oral-arg" class="sub">Oral Argument</a>
+  <a href="#glossary">Glossary</a>
+
+  <div class="sidebar-title" style="margin-top:16px;">Personal</div>
+  <details class="sidebar-panel" id="progressPanel">
+    <summary>Progress Tracker</summary>
+    <div class="panel-body">
+      <div class="progress-bar-mini"><div class="fill" id="progressFill"></div></div>
+      <ul class="progress-list">
+        <li><label><input type="checkbox" data-phase="phase1"> Phase 1: Initiation</label></li>
+        <li><label><input type="checkbox" data-phase="phase2"> Phase 2: Pre-Trial</label></li>
+        <li><label><input type="checkbox" data-phase="phase3"> Phase 3: Trial</label></li>
+        <li><label><input type="checkbox" data-phase="phase4"> Phase 4: Resolution</label></li>
+        <li><label><input type="checkbox" data-phase="phase5"> Phase 5: Appeals</label></li>
+      </ul>
+    </div>
+  </details>
+  <details class="sidebar-panel" id="bookmarksPanel">
+    <summary>Bookmarks</summary>
+    <div class="panel-body">
+      <ul class="bookmarks-list" id="bookmarksList"></ul>
+      <div class="bookmarks-empty" id="bookmarksEmpty">No bookmarks yet. Click 🔖 on any section to bookmark it.</div>
+    </div>
+  </details>
+</nav>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>

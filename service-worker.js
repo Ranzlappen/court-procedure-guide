@@ -3,11 +3,25 @@ importScripts('https://storage.googleapis.com/workbox-cdn/releases/7.3.0/workbox
 if (workbox) {
   // Precache critical static assets
   workbox.precaching.precacheAndRoute([
-    { url: '/', revision: '1' },
-    { url: '/index.html', revision: '1' },
-    { url: '/styles.css', revision: '1' },
-    { url: '/app.js', revision: '1' },
-    { url: '/manifest.json', revision: '1' },
+    { url: '/', revision: '2' },
+    { url: '/index.html', revision: '2' },
+    { url: '/css/variables.css', revision: '3' },
+    { url: '/css/base.css', revision: '3' },
+    { url: '/css/topbar.css', revision: '3' },
+    { url: '/css/content.css', revision: '3' },
+    { url: '/css/typography.css', revision: '3' },
+    { url: '/css/flowchart.css', revision: '3' },
+    { url: '/css/sidebar-panels.css', revision: '3' },
+    { url: '/css/responsive.css', revision: '3' },
+    { url: '/js/glossary-data.js', revision: '2' },
+    { url: '/js/core.js', revision: '2' },
+    { url: '/js/glossary-ui.js', revision: '2' },
+    { url: '/js/controls.js', revision: '2' },
+    { url: '/js/search.js', revision: '2' },
+    { url: '/js/sidebar.js', revision: '2' },
+    { url: '/js/storage.js', revision: '2' },
+    { url: '/js/flowchart.js', revision: '2' },
+    { url: '/manifest.json', revision: '2' },
     { url: '/icons/icon-192x192.png', revision: '1' },
     { url: '/icons/icon-512x512.png', revision: '1' }
   ]);
