@@ -8,8 +8,6 @@
   .sidebar.open { transform: translateX(0); }
   .sidebar-toggle { display: block; }
   .main-content { margin-left: 0; }
-  .top-bar { margin-left: 0; padding: 8px 16px; }
-  .phase-progress button { font-size: 0.7rem; }
 }
 
 /* --- Small tablet --- */
@@ -19,22 +17,6 @@
 
 /* --- Mobile --- */
 @media (max-width: 640px) {
-  /* Top bar compaction */
-  .top-bar { padding: 6px 10px; }
-  .disclaimer {
-    font-size: 0.75rem;
-    padding: 6px 12px;
-    margin-bottom: 6px;
-    line-height: 1.4;
-  }
-  /* Phase progress */
-  .phase-progress { gap: 2px; }
-  .phase-progress button {
-    font-size: 0.6rem;
-    padding: 5px 2px;
-    border-radius: 6px;
-  }
-
   /* Main content tightening */
   .main-content { padding: 0 8px 40px; }
   .page-header h1 { font-size: 1.3rem; }
@@ -85,8 +67,6 @@
 @media (max-width: 400px) {
   .toggle-group button { padding: 6px 10px; font-size: 0.75rem; }
   .main-content { padding: 0 6px 40px; }
-  .phase-progress button { font-size: 0.55rem; padding: 4px 1px; }
-  .disclaimer { font-size: 0.72rem; padding: 5px 10px; }
   .phase-hdr .icon { font-size: 1.1rem; }
   .phase-hdr { gap: 6px; padding: 10px; }
   .page-header { padding: 16px 0 10px; }
@@ -96,12 +76,9 @@
 
 /* --- Landscape phones --- */
 @media (max-height: 500px) and (orientation: landscape) {
-  .disclaimer { display: none; }
-  .top-bar { padding: 4px 12px; }
-  .phase-progress button { padding: 3px 2px; }
   .page-header { padding: 12px 0 8px; }
   .page-header h1 { font-size: 1.1rem; }
-  html { scroll-padding-top: 80px; }
+  html { scroll-padding-top: 20px; }
 }
 
 /* Safe area support for notched devices */
@@ -113,7 +90,7 @@
 
 /* Print styles */
 @media print {
-  .sidebar, .sidebar-toggle, .sidebar-overlay, .top-bar, .flowchart-container,
+  .sidebar, .sidebar-toggle, .sidebar-overlay, .flowchart-container,
   .bookmark-btn, .phase-notes { display: none !important; }
   .main-content { margin-left: 0; max-width: 100%; }
   .phase-tab { display: block !important; }

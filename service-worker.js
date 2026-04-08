@@ -14,7 +14,7 @@ if (workbox) {
     { url: '/css/sidebar-panels.css', revision: '4' },
     { url: '/css/responsive.css', revision: '4' },
     { url: '/js/glossary-data.js', revision: '2' },
-    { url: '/js/core.js', revision: '2' },
+    { url: '/js/core.js', revision: '3' },
     { url: '/js/glossary-ui.js', revision: '2' },
     { url: '/js/controls.js', revision: '2' },
     { url: '/js/search.js', revision: '2' },

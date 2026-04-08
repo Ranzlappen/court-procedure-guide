@@ -36,6 +36,9 @@
 <div class="layout">
 <nav class="sidebar" id="sidebar">
   <div style="padding:12px 20px;font-weight:700;color:var(--accent);font-size:0.95rem;">Court Algorithm Guide</div>
+  <div class="sidebar-disclaimer">
+    ⚠️ <strong>Legal Disclaimer:</strong> This guide is for <strong>informational and educational purposes only</strong>. It is <strong>not legal advice</strong>. Court procedures vary by jurisdiction. Always consult a licensed attorney for legal matters.
+  </div>
   <details class="sidebar-panel" id="controlsPanel" open>
     <summary>Settings &amp; Search</summary>
     <div class="panel-body sidebar-controls-body">
@@ -66,6 +69,13 @@
       </div>
     </div>
   </details>
+  <div class="phase-progress" id="phaseProgress">
+    <button data-target="phase1" class="active">1. Initiation</button>
+    <button data-target="phase2">2. Pre-Trial</button>
+    <button data-target="phase3">3. Trial</button>
+    <button data-target="phase4">4. Resolution</button>
+    <button data-target="phase5">5. Appeals</button>
+  </div>
   <div class="sidebar-title">Phases</div>
   <a href="#phase1">1. Case Initiation</a>
   <a href="#phase2">2. Pre-Trial</a>
@@ -118,22 +128,6 @@
 
 <div class="sidebar-overlay" id="sidebarOverlay"></div>
 <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle navigation">☰</button>
-
-<!-- =====================================================================
-     TOP BAR: Disclaimer, Controls, Search, Phase Progress
-     ===================================================================== -->
-<div class="top-bar" id="topBar">
-  <div class="disclaimer">
-    ⚠️ <strong>Legal Disclaimer:</strong> This guide is for <strong>informational and educational purposes only</strong>. It is <strong>not legal advice</strong>. Court procedures vary by jurisdiction. Always consult a licensed attorney for legal matters.
-  </div>
-  <div class="phase-progress" id="phaseProgress">
-    <button data-target="phase1" class="active">1. Initiation</button>
-    <button data-target="phase2">2. Pre-Trial</button>
-    <button data-target="phase3">3. Trial</button>
-    <button data-target="phase4">4. Resolution</button>
-    <button data-target="phase5">5. Appeals</button>
-  </div>
-</div>
 
 <!-- =====================================================================
      MAIN CONTENT AREA
