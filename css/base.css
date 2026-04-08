@@ -94,7 +94,7 @@ body {
 .sidebar-toggle {
   display: none;
   position: fixed;
-  bottom: 20px; left: 20px;
+  top: 12px; left: 12px;
   z-index: 300;
   width: 52px; height: 52px;
   border-radius: 50%;

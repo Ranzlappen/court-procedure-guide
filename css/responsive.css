@@ -12,17 +12,8 @@
   .phase-progress button { font-size: 0.7rem; }
 }
 
-/* --- Small tablet: grid controls --- */
+/* --- Small tablet --- */
 @media (max-width: 768px) {
-  .controls-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-  }
-  .search-bar {
-    grid-column: 1 / -1;
-    min-width: 0;
-  }
   .page-header { padding: 24px 0 16px; }
 }
 
@@ -36,17 +27,6 @@
     margin-bottom: 6px;
     line-height: 1.4;
   }
-  .controls-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 6px;
-    margin-bottom: 6px;
-  }
-  .search-bar {
-    grid-column: 1 / -1;
-    min-width: 0;
-  }
-
   /* Phase progress */
   .phase-progress { gap: 2px; }
   .phase-progress button {
@@ -103,7 +83,6 @@
 
 /* --- Small phones --- */
 @media (max-width: 400px) {
-  .controls-row { grid-template-columns: 1fr; }
   .toggle-group button { padding: 6px 10px; font-size: 0.75rem; }
   .main-content { padding: 0 6px 40px; }
   .phase-progress button { font-size: 0.55rem; padding: 4px 1px; }
@@ -119,7 +98,6 @@
 @media (max-height: 500px) and (orientation: landscape) {
   .disclaimer { display: none; }
   .top-bar { padding: 4px 12px; }
-  .controls-row { margin-bottom: 4px; }
   .phase-progress button { padding: 3px 2px; }
   .page-header { padding: 12px 0 8px; }
   .page-header h1 { font-size: 1.1rem; }
@@ -129,7 +107,7 @@
 /* Safe area support for notched devices */
 @supports (padding: env(safe-area-inset-bottom)) {
   .sidebar { padding-bottom: calc(80px + env(safe-area-inset-bottom)); }
-  .sidebar-toggle { bottom: calc(20px + env(safe-area-inset-bottom)); left: calc(20px + env(safe-area-inset-left)); }
+  .sidebar-toggle { top: calc(12px + env(safe-area-inset-top)); left: calc(12px + env(safe-area-inset-left)); }
   .main-content { padding-bottom: calc(60px + env(safe-area-inset-bottom)); }
 }
 
