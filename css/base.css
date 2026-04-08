@@ -3,7 +3,7 @@
    ========================================================================== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-html { scroll-behavior: smooth; scroll-padding-top: 140px; }
+html { scroll-behavior: smooth; scroll-padding-top: 20px; }
 
 body {
   font-family: var(--font);
@@ -94,7 +94,7 @@ body {
 .sidebar-toggle {
   display: none;
   position: fixed;
-  bottom: 20px; left: 20px;
+  top: 12px; left: 12px;
   z-index: 300;
   width: 52px; height: 52px;
   border-radius: 50%;
@@ -125,4 +125,26 @@ body {
   flex: 1;
   max-width: 920px;
   padding: 0 24px 60px 24px;
+}
+
+/* Disclaimer inside sidebar */
+.sidebar-disclaimer {
+  padding: 8px 14px;
+  font-size: 0.72rem;
+  line-height: 1.4;
+  color: var(--clr-objection);
+  background: var(--clr-objection-bg);
+  border-bottom: 1px solid rgba(252,165,165,0.3);
+}
+
+/* Phase progress inside sidebar */
+.sidebar .phase-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--border);
+}
+.sidebar .phase-progress button {
+  text-align: left;
 }

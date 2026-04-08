@@ -44,7 +44,7 @@ function switchTab(phaseId) {
   // Scroll to top of main content
   const main = document.querySelector('main');
   if (main) main.scrollTop = 0;
-  window.scrollTo({ top: document.querySelector('.top-bar')?.offsetTop || 0 });
+  window.scrollTo({ top: 0 });
 }
 
 // Handle URL hash on load and back/forward

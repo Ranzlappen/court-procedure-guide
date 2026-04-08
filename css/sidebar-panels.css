@@ -31,6 +31,27 @@
   padding: 4px 16px 12px;
 }
 
+/* Controls panel (Settings & Search) */
+.sidebar-controls-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.sidebar-controls-body .toggle-group {
+  align-self: stretch;
+  display: flex;
+}
+.sidebar-controls-body .toggle-group button {
+  flex: 1;
+}
+.sidebar-controls-body .role-select,
+.sidebar-controls-body .jurisdiction-select {
+  width: 100%;
+}
+.sidebar-controls-body .search-bar {
+  min-width: 0;
+}
+
 /* Progress tracker */
 .progress-list {
   list-style: none;
