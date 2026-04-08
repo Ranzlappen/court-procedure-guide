@@ -1,32 +1,129 @@
 /* ==========================================================================
    RESPONSIVE
    ========================================================================== */
+
+/* --- Tablet: sidebar drawer --- */
 @media (max-width: 900px) {
   .sidebar { transform: translateX(-100%); }
   .sidebar.open { transform: translateX(0); }
   .sidebar-toggle { display: block; }
   .main-content { margin-left: 0; }
-  .top-bar { margin-left: 0; }
+  .top-bar { margin-left: 0; padding: 8px 16px; }
+  .phase-progress button { font-size: 0.7rem; }
 }
+
+/* --- Small tablet: grid controls --- */
+@media (max-width: 768px) {
+  .controls-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .search-bar {
+    grid-column: 1 / -1;
+    min-width: 0;
+  }
+  .page-header { padding: 24px 0 16px; }
+}
+
+/* --- Mobile --- */
 @media (max-width: 640px) {
-  .main-content { padding: 0 12px 40px; }
-  .top-bar { padding: 8px 12px; }
-  .controls-row { gap: 6px; }
-  .phase-hdr { padding: 12px 14px; }
-  .phase-hdr .label { font-size: 0.95rem; }
+  /* Top bar compaction */
+  .top-bar { padding: 6px 10px; }
+  .disclaimer {
+    font-size: 0.75rem;
+    padding: 6px 12px;
+    margin-bottom: 6px;
+    line-height: 1.4;
+  }
+  .controls-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    margin-bottom: 6px;
+  }
+  .search-bar {
+    grid-column: 1 / -1;
+    min-width: 0;
+  }
+
+  /* Phase progress */
+  .phase-progress { gap: 2px; }
+  .phase-progress button {
+    font-size: 0.6rem;
+    padding: 5px 2px;
+    border-radius: 6px;
+  }
+
+  /* Main content tightening */
+  .main-content { padding: 0 8px 40px; }
   .page-header h1 { font-size: 1.3rem; }
-  .phase-progress button { font-size: 0.65rem; padding: 5px 2px; }
-  /* Better touch targets on mobile */
+
+  /* Cards & accordions */
+  .phase-card { border-radius: var(--radius); }
+  .phase-hdr { padding: 12px 14px; gap: 8px; min-height: 48px; }
+  .phase-hdr .label { font-size: 0.95rem; }
+  .phase-body-inner { padding: 0 12px 12px; }
+  .sub-hdr { padding: 10px 12px; gap: 8px; }
+  .sub-body-inner { padding: 8px 10px 12px; }
+
+  /* Section blocks */
+  .section-block { padding: 10px; margin-top: 10px; }
+  .section-block[data-collapsible] > .sec-title { padding: 10px; }
+  .section-block[data-collapsible] > .collapsible-content { padding: 0 10px 10px; }
+  .bookmark-btn { font-size: 1.2rem; padding: 8px; }
+
+  /* Typography */
+  ul, ol { padding-left: 14px; }
+  ol li { padding-left: 26px; }
+  ol li::before { width: 18px; height: 18px; font-size: 0.65rem; }
+  th, td { padding: 6px 8px; font-size: 0.8rem; }
+  .decision-tree { padding: 10px; font-size: 0.78rem; }
+
+  /* Touch targets */
   .toggle-group button { padding: 8px 16px; min-height: 40px; }
   .role-select, .jurisdiction-select { min-height: 40px; padding: 8px 14px; }
   .sidebar a { padding: 10px 16px 10px 24px; min-height: 40px; }
   .sidebar a.sub { padding-left: 38px; }
-  .phase-hdr { min-height: 48px; }
-  .bookmark-btn { font-size: 1.2rem; padding: 8px; }
-  /* Flowchart scroll hint */
-  .flowchart-container { padding: 12px 8px; }
-  /* Table responsive */
-  table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .sidebar-toggle { width: 48px; height: 48px; font-size: 1.2rem; }
+
+  /* Flowchart */
+  .flowchart-container { padding: 8px 4px; border-radius: var(--radius); }
+
+  /* Table scroll with indicator shadows */
+  table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Modal */
+  .modal { width: 95%; max-height: 85vh; padding: 16px; border-radius: var(--radius); }
+}
+
+/* --- Small phones --- */
+@media (max-width: 400px) {
+  .controls-row { grid-template-columns: 1fr; }
+  .toggle-group button { padding: 6px 10px; font-size: 0.75rem; }
+  .main-content { padding: 0 6px 40px; }
+  .phase-progress button { font-size: 0.55rem; padding: 4px 1px; }
+  .disclaimer { font-size: 0.72rem; padding: 5px 10px; }
+  .phase-hdr .icon { font-size: 1.1rem; }
+  .phase-hdr { gap: 6px; padding: 10px; }
+  .page-header { padding: 16px 0 10px; }
+  h2 { font-size: 1.05rem; }
+  h3 { font-size: 0.92rem; }
+}
+
+/* --- Landscape phones --- */
+@media (max-height: 500px) and (orientation: landscape) {
+  .disclaimer { display: none; }
+  .top-bar { padding: 4px 12px; }
+  .controls-row { margin-bottom: 4px; }
+  .phase-progress button { padding: 3px 2px; }
+  .page-header { padding: 12px 0 8px; }
+  .page-header h1 { font-size: 1.1rem; }
+  html { scroll-padding-top: 80px; }
 }
 
 /* Safe area support for notched devices */
