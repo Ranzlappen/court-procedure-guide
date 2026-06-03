@@ -18,5 +18,5 @@ This project is a Progressive Web App (PWA). The following files are critical an
 5. When updating cached files, bump the `revision` value in `service-worker.js` to bust the precache.
 6. The service worker scope is `/` — do not change the registration path.
 7. Keep `start_url` as `/` in `manifest.json`.
-8. Icon files in `icons/` are placeholders — replace with real branded icons but keep the filenames and sizes.
+8. Icon files in `icons/` use the shared icon-universe naming: `favicon.ico`, `favicon-16x16.png`, `favicon-32x32.png`, `apple-touch-icon.png`, `icon-192.png`, `icon-512.png`, `icon-maskable-192.png`, `icon-maskable-512.png` (gavel-and-scales emblem). Keep these filenames + sizes; both `manifest.json` and the `service-worker.js` precache reference them.
 9. Do not modify existing HTML structure, CSS, or JS logic unless strictly necessary for the change being made.
