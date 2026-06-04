@@ -28,8 +28,8 @@ if (workbox) {
     { url: '/icons/apple-touch-icon.png', revision: '2' },
     { url: '/icons/icon-192.png', revision: '2' },
     { url: '/icons/icon-512.png', revision: '2' },
-    { url: '/icons/icon-maskable-192.png', revision: '2' },
-    { url: '/icons/icon-maskable-512.png', revision: '2' }
+    { url: '/icons/icon-maskable-192.png', revision: '3' },
+    { url: '/icons/icon-maskable-512.png', revision: '3' }
   ]);
 
   // Network-first for HTML (navigations)
