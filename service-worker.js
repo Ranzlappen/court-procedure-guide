@@ -3,8 +3,8 @@ importScripts('https://storage.googleapis.com/workbox-cdn/releases/7.3.0/workbox
 if (workbox) {
   // Precache critical static assets
   workbox.precaching.precacheAndRoute([
-    { url: '/', revision: '3' },
-    { url: '/index.html', revision: '3' },
+    { url: '/', revision: '4' },
+    { url: '/index.html', revision: '4' },
     { url: '/css/variables.css', revision: '3' },
     { url: '/css/base.css', revision: '4' },
     { url: '/css/topbar.css', revision: '3' },
@@ -21,9 +21,15 @@ if (workbox) {
     { url: '/js/sidebar.js', revision: '2' },
     { url: '/js/storage.js', revision: '2' },
     { url: '/js/flowchart.js', revision: '2' },
-    { url: '/manifest.json', revision: '2' },
-    { url: '/icons/icon-192x192.png', revision: '1' },
-    { url: '/icons/icon-512x512.png', revision: '1' }
+    { url: '/manifest.json', revision: '3' },
+    { url: '/icons/favicon.ico', revision: '2' },
+    { url: '/icons/favicon-16x16.png', revision: '2' },
+    { url: '/icons/favicon-32x32.png', revision: '2' },
+    { url: '/icons/apple-touch-icon.png', revision: '2' },
+    { url: '/icons/icon-192.png', revision: '2' },
+    { url: '/icons/icon-512.png', revision: '2' },
+    { url: '/icons/icon-maskable-192.png', revision: '2' },
+    { url: '/icons/icon-maskable-512.png', revision: '2' }
   ]);
 
   // Network-first for HTML (navigations)
