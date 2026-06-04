@@ -22,14 +22,14 @@ if (workbox) {
     { url: '/js/storage.js', revision: '2' },
     { url: '/js/flowchart.js', revision: '2' },
     { url: '/manifest.json', revision: '3' },
-    { url: '/icons/favicon.ico', revision: '2' },
-    { url: '/icons/favicon-16x16.png', revision: '2' },
-    { url: '/icons/favicon-32x32.png', revision: '2' },
-    { url: '/icons/apple-touch-icon.png', revision: '4' },
-    { url: '/icons/icon-192.png', revision: '2' },
-    { url: '/icons/icon-512.png', revision: '2' },
-    { url: '/icons/icon-maskable-192.png', revision: '4' },
-    { url: '/icons/icon-maskable-512.png', revision: '4' }
+    { url: '/icons/favicon.ico', revision: '5' },
+    { url: '/icons/favicon-16x16.png', revision: '5' },
+    { url: '/icons/favicon-32x32.png', revision: '5' },
+    { url: '/icons/apple-touch-icon.png', revision: '5' },
+    { url: '/icons/icon-192.png', revision: '5' },
+    { url: '/icons/icon-512.png', revision: '5' },
+    { url: '/icons/icon-maskable-192.png', revision: '5' },
+    { url: '/icons/icon-maskable-512.png', revision: '5' }
   ]);
 
   // Network-first for HTML (navigations)
