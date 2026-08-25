@@ -1,46 +1,151 @@
 /* ==========================================================================
-   SVG FLOWCHART
+   CASE FLOW MAP
+   Replaces the old fixed 960px SVG. Built from real buttons so it is
+   keyboard-operable and screen-reader legible, and it reflows from a
+   horizontal track to a vertical stack instead of scaling its text to 5px.
    ========================================================================== */
-.flowchart-container {
-  background: var(--bg-card);
+.flowmap {
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  padding: 16px;
-  margin-bottom: 20px;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
+  background: var(--bg-surface);
+  margin-bottom: var(--sp-5);
+  overflow: hidden;
 }
-.flowchart-container svg {
-  display: block;
-  margin: 0 auto;
-  max-width: 100%;
-  height: auto;
-}
-.flowchart-container svg .fc-node {
+
+.flowmap > summary {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-4);
+  min-height: var(--tap);
   cursor: pointer;
-  transition: filter 0.2s ease;
+  list-style: none;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  -webkit-tap-highlight-color: transparent;
 }
-.flowchart-container svg .fc-node:hover {
-  filter: brightness(1.2);
+.flowmap > summary::-webkit-details-marker { display: none; }
+.flowmap > summary::after {
+  content: '\25B6';
+  font-size: 0.55rem;
+  margin-left: auto;
+  transition: transform var(--transition);
 }
-.flowchart-container svg .fc-node.fc-active rect,
-.flowchart-container svg .fc-node.fc-active ellipse {
-  stroke-width: 3;
-  stroke: var(--accent);
+.flowmap[open] > summary::after { transform: rotate(90deg); }
+.flowmap > summary:hover { color: var(--accent); }
+
+.flowmap-body { padding: 0 var(--sp-4) var(--sp-4); }
+
+/* --- Track --- */
+.flowmap-track {
+  display: flex;
+  align-items: stretch;
+  gap: var(--sp-2);
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
-.flowchart-container svg text {
+.flowmap-track > li {
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+.flowmap-track > li::before { display: none; }   /* cancel the global ul bullet */
+
+.fc-step { flex: 1 1 0; min-width: 0; }
+
+/* --- Node --- */
+.fc-node {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--sp-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  color: var(--text);
   font-family: var(--font);
-  font-size: 11px;
-  fill: var(--text);
-  pointer-events: none;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color var(--transition), background var(--transition);
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  min-height: var(--tap);
 }
-.flowchart-container svg .fc-arrow {
-  fill: none;
-  stroke: var(--text-muted);
-  stroke-width: 2;
-  marker-end: url(#arrowhead);
+.fc-node:hover {
+  border-color: var(--accent);
+  background: var(--bg-card-hover);
 }
-.flowchart-container svg .fc-label {
-  font-size: 9px;
-  fill: var(--text-muted);
+.fc-node .fc-num {
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--text-muted);
+}
+.fc-node .fc-name {
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+.fc-node .fc-sub {
+  font-size: 0.68rem;
+  color: var(--text-secondary);
+  line-height: 1.35;
+}
+
+.fc-node.fc-active {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.fc-node.fc-active .fc-num { color: var(--accent); }
+
+/* Phase already ticked off in the progress tracker */
+.fc-node.fc-done .fc-num::after { content: ' \2713'; color: var(--accent); }
+
+/* --- Connector --- */
+.fc-link {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  line-height: 1;
+}
+.fc-link::before { content: '\2192'; }          /* → */
+
+/* --- Branch note (the old decision diamonds, as readable text) --- */
+.fc-branch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1) var(--sp-3);
+  margin-top: var(--sp-3);
+  padding: var(--sp-2) var(--sp-3);
+  border: 1px dashed var(--border-light);
+  border-radius: var(--radius);
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+}
+.fc-branch b { color: var(--accent); font-weight: 700; }
+.fc-branch span { white-space: nowrap; }
+
+/* --------------------------------------------------------------------------
+   Below 900px the track becomes a vertical stack and the arrows turn down.
+   -------------------------------------------------------------------------- */
+@media (max-width: 900px) {
+  .flowmap-track { flex-direction: column; align-items: stretch; }
+  .flowmap-track > li { flex-direction: column; align-items: stretch; }
+  .fc-link { padding: 2px 0; }
+  .fc-link::before { content: '\2193'; }        /* ↓ */
+  .fc-node { flex-direction: row; align-items: baseline; gap: var(--sp-2); flex-wrap: wrap; }
+  .fc-node .fc-sub { flex-basis: 100%; }
 }
