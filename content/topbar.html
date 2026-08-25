@@ -1,43 +1,29 @@
-<button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle navigation">☰</button>
 
 <!-- =====================================================================
-     TOP BAR: Disclaimer, Controls, Search, Phase Progress
+     APP BAR — persistent orientation strip (drawer toggle, brand,
+     current phase readout, search). Fixed at every breakpoint.
      ===================================================================== -->
-<div class="top-bar" id="topBar">
-  <div class="disclaimer">
-    ⚠️ <strong>Legal Disclaimer:</strong> This guide is for <strong>informational and educational purposes only</strong>. It is <strong>not legal advice</strong>. Court procedures vary by jurisdiction. Always consult a licensed attorney for legal matters.
+<header class="appbar">
+  <button class="appbar-btn nav-toggle" id="sidebarToggle" aria-controls="sidebar" aria-expanded="false" aria-label="Open navigation menu">
+    <span aria-hidden="true">&#9776;</span>
+  </button>
+
+  <a class="appbar-brand" href="#phase1">
+    <span class="mark" aria-hidden="true">&#9878;&#65039;</span>
+    <span class="name">Court Guide</span>
+  </a>
+
+  <div class="appbar-where">
+    <span class="appbar-kicker" id="appbarKicker">Phase 1 of 5</span>
+    <span class="appbar-phase" id="appbarPhase">Case Initiation</span>
   </div>
-  <div class="controls-row">
-    <div class="toggle-group" id="caseToggle">
-      <button class="active" data-case="criminal">Criminal</button>
-      <button data-case="civil">Civil</button>
-    </div>
-    <select class="role-select" id="roleSelect">
-      <option value="observer" selected>👁️ Observer / Gallery</option>
-      <option value="judge">⚖️ Judge</option>
-      <option value="prosecution">📋 Prosecution / Plaintiff</option>
-      <option value="defense">🛡️ Defense Attorney</option>
-      <option value="defendant">👤 Defendant</option>
-      <option value="witness">🗣️ Witness</option>
-    </select>
-    <select class="jurisdiction-select" id="jurisdictionSelect">
-      <option value="both" selected>🏛️ All Jurisdictions</option>
-      <option value="federal">Federal</option>
-      <option value="state">State</option>
-    </select>
-    <div class="toggle-group" id="themeToggle">
-      <button class="active" data-theme="dark">🌙 Dark</button>
-      <button data-theme="light">☀️ Light</button>
-    </div>
-    <div class="search-bar">
-      <input type="text" id="searchInput" placeholder="Search the guide…" aria-label="Search">
-      <button class="clear-search" id="clearSearch">✕</button>
+
+  <div class="appbar-search">
+    <div class="search-bar" id="searchBarDesktop">
+      <label class="visually-hidden" for="searchInput">Search the guide</label>
+      <input type="search" id="searchInput" placeholder="Search the guide&hellip;" autocomplete="off">
+      <span class="search-count" id="searchCount" aria-live="polite"></span>
+      <button class="clear-search" id="clearSearch" type="button" aria-label="Clear search">&times;</button>
     </div>
   </div>
-  <div class="phase-progress" id="phaseProgress">
-    <button data-target="phase1" class="active">1. Initiation</button>
-    <button data-target="phase2">2. Pre-Trial</button>
-    <button data-target="phase3">3. Trial</button>
-    <button data-target="phase4">4. Resolution</button>
-    <button data-target="phase5">5. Appeals</button>
-  </div>
+</header>

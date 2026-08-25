@@ -1,44 +1,79 @@
-/* ===== SEARCH ===== */
+/* ==========================================================================
+   SEARCH — highlights matches across every phase, reports a count, and
+   steps through hits with Enter / Shift+Enter.
+   ========================================================================== */
+
 const searchInput = document.getElementById('searchInput');
 const searchClearBtn = document.getElementById('clearSearch');
+const searchCountEl = document.getElementById('searchCount');
 
-if (searchInput) {
-  searchInput.addEventListener('input', debounce(doSearch, 300));
-}
-if (searchClearBtn) {
-  searchClearBtn.addEventListener('click', () => {
-    searchInput.value = '';
-    clearSearch();
-  });
-}
+let searchMatches = [];
+let searchCursor = -1;
 
 function debounce(fn, ms) {
   let t;
-  return function(...args) { clearTimeout(t); t = setTimeout(() => fn.apply(this, args), ms); };
+  return function (...args) {
+    clearTimeout(t);
+    t = setTimeout(() => fn.apply(this, args), ms);
+  };
+}
+
+function searchBarEl() {
+  return searchInput ? searchInput.closest('.search-bar') : null;
+}
+
+/* --------------------------------------------------------------------------
+   Highlighting
+   -------------------------------------------------------------------------- */
+function clearSearch() {
+  document.querySelectorAll('mark.search-highlight').forEach(mark => {
+    const parent = mark.parentNode;
+    if (!parent) return;
+    parent.replaceChild(document.createTextNode(mark.textContent), mark);
+    parent.normalize();
+  });
+  searchMatches = [];
+  searchCursor = -1;
+  if (searchCountEl) searchCountEl.textContent = '';
+  const bar = searchBarEl();
+  if (bar) bar.classList.remove('has-query');
+}
+
+function collectTextNodes(root) {
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+    acceptNode(node) {
+      if (!node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+      // Never rewrite inside controls or generated chrome — replacing those
+      // text nodes would detach live event targets.
+      if (node.parentElement.closest(
+        'script, style, textarea, .jump-chips, .phase-pager, .stepper, .bookmark-btn'
+      )) return NodeFilter.FILTER_REJECT;
+      return NodeFilter.FILTER_ACCEPT;
+    }
+  });
+  const nodes = [];
+  while (walker.nextNode()) nodes.push(walker.currentNode);
+  return nodes;
 }
 
 function doSearch() {
   clearSearch();
-  const q = searchInput.value.trim().toLowerCase();
-  if (q.length < 2) return;
 
-  // Escape regex special chars
-  const escaped = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const query = searchInput.value.trim();
+  const bar = searchBarEl();
+  if (bar) bar.classList.toggle('has-query', query.length > 0);
+
+  if (query.length < 2) return;
+
+  const escaped = query.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   const re = new RegExp(`(${escaped})`, 'gi');
 
-  // Temporarily show all tabs so we can search across them
-  const allTabs = document.querySelectorAll('.phase-tab');
-  allTabs.forEach(tab => tab.style.display = 'block');
+  const main = document.getElementById('mainContent');
+  if (!main) return;
 
-  const main = document.querySelector('main');
-  const walker = document.createTreeWalker(main, NodeFilter.SHOW_TEXT, null);
-  const textNodes = [];
-  while (walker.nextNode()) textNodes.push(walker.currentNode);
-
-  let matchCount = 0;
-  textNodes.forEach(node => {
-    if (node.parentElement.closest('script, style, .phase-hdr')) return;
-    const text = node.textContent;
+  collectTextNodes(main).forEach(node => {
+    const text = node.nodeValue;
+    re.lastIndex = 0;
     if (!re.test(text)) return;
     re.lastIndex = 0;
 
@@ -46,43 +81,81 @@ function doSearch() {
     let lastIdx = 0;
     let match;
     while ((match = re.exec(text)) !== null) {
-      if (match.index > lastIdx) frag.appendChild(document.createTextNode(text.slice(lastIdx, match.index)));
+      if (match.index > lastIdx) {
+        frag.appendChild(document.createTextNode(text.slice(lastIdx, match.index)));
+      }
       const mark = document.createElement('mark');
       mark.className = 'search-highlight';
       mark.textContent = match[1];
       frag.appendChild(mark);
       lastIdx = re.lastIndex;
-      matchCount++;
     }
     if (lastIdx < text.length) frag.appendChild(document.createTextNode(text.slice(lastIdx)));
     node.parentNode.replaceChild(frag, node);
   });
 
-  // Restore tab visibility
-  allTabs.forEach(tab => tab.style.display = '');
+  searchMatches = Array.from(document.querySelectorAll('mark.search-highlight'));
 
-  // Switch to the tab containing the first match and open its accordion
-  const firstMark = main.querySelector('mark.search-highlight');
-  if (firstMark) {
-    const phaseTab = firstMark.closest('.phase-tab');
-    if (phaseTab) switchTab(phaseTab.id);
-
-    let el = firstMark;
-    while (el) {
-      if (el.classList && el.classList.contains('phase-card') && !el.classList.contains('open')) {
-        const hdr = el.querySelector('.phase-hdr');
-        if (hdr) togglePhase(hdr);
-      }
-      el = el.parentElement;
-    }
-    setTimeout(() => firstMark.scrollIntoView({ behavior: 'smooth', block: 'center' }), 400);
+  if (searchCountEl) {
+    searchCountEl.textContent = searchMatches.length
+      ? `${searchMatches.length} hit${searchMatches.length === 1 ? '' : 's'}`
+      : 'none';
   }
+
+  if (searchMatches.length) gotoMatch(0);
 }
 
-function clearSearch() {
-  document.querySelectorAll('mark.search-highlight').forEach(mark => {
-    const parent = mark.parentNode;
-    parent.replaceChild(document.createTextNode(mark.textContent), mark);
-    parent.normalize();
+/* --------------------------------------------------------------------------
+   Stepping through results
+   -------------------------------------------------------------------------- */
+function gotoMatch(index) {
+  if (!searchMatches.length) return;
+
+  const total = searchMatches.length;
+  searchCursor = ((index % total) + total) % total;
+
+  searchMatches.forEach(m => m.classList.remove('search-current'));
+  const mark = searchMatches[searchCursor];
+  mark.classList.add('search-current');
+
+  // Matches live in collapsed accordions and inactive tabs — open the way in.
+  const tab = mark.closest('.phase-tab');
+  if (tab && !tab.classList.contains('active')) switchTab(tab.id, { keepScroll: true });
+  revealElement(mark);
+
+  requestAnimationFrame(() => mark.scrollIntoView({ behavior: 'smooth', block: 'center' }));
+
+  if (searchCountEl) searchCountEl.textContent = `${searchCursor + 1}/${total}`;
+}
+
+/* --------------------------------------------------------------------------
+   Wiring
+   -------------------------------------------------------------------------- */
+if (searchInput) {
+  searchInput.addEventListener('input', debounce(doSearch, 250));
+
+  searchInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (!searchMatches.length) return;
+      gotoMatch(searchCursor + (e.shiftKey ? -1 : 1));
+    } else if (e.key === 'Escape') {
+      searchInput.value = '';
+      clearSearch();
+      searchInput.blur();
+    }
   });
 }
+
+if (searchClearBtn) {
+  searchClearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    clearSearch();
+    searchInput.focus();
+  });
+}
+
+/* A phase switch made by other means invalidates the current highlight run. */
+document.addEventListener('phasechange', () => {
+  if (searchInput && !searchInput.value.trim()) clearSearch();
+});

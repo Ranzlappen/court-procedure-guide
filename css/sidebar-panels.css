@@ -1,120 +1,176 @@
 /* ==========================================================================
-   SIDEBAR PERSONAL FEATURES (collapsible panels)
+   SIDEBAR PANELS — brand, filters, progress, bookmarks
    ========================================================================== */
-.sidebar-panel {
-  border-top: 1px solid var(--border);
+
+/* --- Disclaimer (always first, never dismissible) --- */
+.sidebar-disclaimer {
+  margin: var(--sp-3);
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--radius);
+  font-size: 0.71rem;
+  line-height: 1.5;
+  color: var(--clr-objection);
+  background: var(--clr-objection-bg);
+  border: 1px solid rgba(252,165,165,0.25);
 }
+
+/* --- Collapsible panels --- */
+.sidebar-panel { border-top: 1px solid var(--border); }
 .sidebar-panel summary {
-  padding: 8px 16px;
-  font-size: 0.75rem;
+  padding: var(--sp-3) var(--sp-4);
+  min-height: var(--tap);
+  font-size: 0.68rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   color: var(--text-muted);
   cursor: pointer;
   list-style: none;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--sp-2);
   user-select: none;
   -webkit-tap-highlight-color: transparent;
 }
 .sidebar-panel summary::-webkit-details-marker { display: none; }
+.sidebar-panel summary:hover { color: var(--accent); }
 .sidebar-panel summary::after {
   content: '\25B6';
-  font-size: 0.55rem;
+  font-size: 0.5rem;
   margin-left: auto;
-  transition: transform 0.2s ease;
+  transition: transform var(--transition);
 }
 .sidebar-panel[open] summary::after { transform: rotate(90deg); }
-.sidebar-panel .panel-body {
-  padding: 4px 16px 12px;
-}
+.sidebar-panel .panel-body { padding: 0 var(--sp-4) var(--sp-4); }
 
-/* Controls panel (Settings & Search) */
+/* --- Filters panel --- */
 .sidebar-controls-body {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-}
-.sidebar-controls-body .toggle-group {
-  align-self: stretch;
-  display: flex;
-}
-.sidebar-controls-body .toggle-group button {
-  flex: 1;
-}
-.sidebar-controls-body .role-select,
-.sidebar-controls-body .jurisdiction-select {
-  width: 100%;
-}
-.sidebar-controls-body .search-bar {
-  min-width: 0;
+  gap: var(--sp-3);
 }
 
-/* Progress tracker */
-.progress-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+/* Plain-language explanation of what the role filter does */
+.control-hint {
+  font-size: 0.68rem;
+  line-height: 1.5;
+  color: var(--text-muted);
 }
-.progress-list li {
-  padding: 0;
-  margin: 0;
+
+/* --- Progress tracker --- */
+.progress-head {
   display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.78rem;
-  color: var(--text-secondary);
-  padding: 3px 0;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-2);
 }
-.progress-list li::before { display: none; }
-.progress-list input[type="checkbox"] {
-  accent-color: var(--accent);
-  width: 14px;
-  height: 14px;
-  cursor: pointer;
+.progress-count {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--accent);
 }
 .progress-bar-mini {
-  height: 4px;
+  height: 5px;
   background: var(--border);
-  border-radius: 2px;
-  margin-top: 8px;
+  border-radius: var(--radius-pill);
   overflow: hidden;
+  margin-bottom: var(--sp-3);
 }
 .progress-bar-mini .fill {
   height: 100%;
   background: var(--accent);
-  border-radius: 2px;
-  transition: width 0.3s ease;
+  border-radius: var(--radius-pill);
+  transition: width var(--motion-med);
 }
 
-/* Bookmarks list in sidebar */
+.progress-list { list-style: none; padding: 0; margin: 0; }
+.progress-list li { padding: 0; margin: 0; }
+.progress-list li::before { display: none; }
+.progress-list label {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: 7px 0;
+  min-height: 36px;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+.progress-list label:hover { color: var(--text); }
+.progress-list input[type="checkbox"] {
+  accent-color: var(--accent);
+  width: 16px; height: 16px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+/* --- Bookmarks --- */
 .bookmarks-list {
   list-style: none;
   padding: 0;
   margin: 0;
-  max-height: 200px;
+  max-height: 240px;
   overflow-y: auto;
+  overscroll-behavior: contain;
 }
-.bookmarks-list li {
-  padding: 0;
-  margin: 0;
-}
+.bookmarks-list li { padding: 0; margin: 0; display: flex; align-items: center; gap: var(--sp-1); }
 .bookmarks-list li::before { display: none; }
 .bookmarks-list a {
+  flex: 1;
+  min-width: 0;
   display: block;
-  padding: 4px 0;
+  padding: 7px 0;
+  padding-left: 0;
+  border-left: none;
   color: var(--text-secondary);
   text-decoration: none;
-  font-size: 0.78rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  font-size: 0.77rem;
+  line-height: 1.4;
 }
-.bookmarks-list a:hover { color: var(--accent); }
-.bookmarks-empty {
-  font-size: 0.75rem;
+.bookmarks-list a:hover { color: var(--accent); background: transparent; }
+.bookmarks-list .bm-phase {
+  display: block;
+  font-size: 0.64rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
   color: var(--text-muted);
-  font-style: italic;
 }
+.bookmarks-list .bm-remove {
+  flex-shrink: 0;
+  width: 26px; height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+.bookmarks-list .bm-remove:hover { color: var(--clr-objection); background: var(--bg-card-hover); }
+
+.bookmarks-empty {
+  font-size: 0.73rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+/* --- Reset personal data --- */
+.panel-action {
+  width: 100%;
+  margin-top: var(--sp-3);
+  padding: 8px var(--sp-3);
+  min-height: 36px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--text-muted);
+  font-family: var(--font);
+  font-size: 0.73rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color var(--transition), border-color var(--transition);
+}
+.panel-action:hover { color: var(--clr-objection); border-color: var(--clr-objection); }

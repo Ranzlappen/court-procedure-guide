@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Court Procedure Algorithm Guide</title>
 <meta name="description" content="Autism-friendly, real-time court procedure algorithm guide for watching court cams or sitting in the gallery.">
 <link rel="stylesheet" href="css/variables.css">
@@ -22,6 +22,15 @@
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<script>
+/* Applied before first paint so a saved light theme never flashes dark first. */
+(function () {
+  try {
+    var saved = JSON.parse(localStorage.getItem('court_guide_data') || '{}');
+    if (saved.theme === 'light') document.documentElement.setAttribute('data-theme', 'light');
+  } catch (e) { /* first visit, private mode, or blocked storage — dark default applies */ }
+})();
+</script>
 <script src="js/glossary-data.js" defer></script>
 <script src="js/core.js" defer></script>
 <script src="js/glossary-ui.js" defer></script>
@@ -32,227 +41,257 @@
 <script src="js/flowchart.js" defer></script>
 </head>
 <body class="case-criminal role-observer">
+<a class="skip-link" href="#mainContent">Skip to guide content</a>
 
 <!-- =====================================================================
-     SIDEBAR NAVIGATION
+     APP BAR — persistent orientation strip (drawer toggle, brand,
+     current phase readout, search). Fixed at every breakpoint.
+     ===================================================================== -->
+<header class="appbar">
+  <button class="appbar-btn nav-toggle" id="sidebarToggle" aria-controls="sidebar" aria-expanded="false" aria-label="Open navigation menu">
+    <span aria-hidden="true">&#9776;</span>
+  </button>
+
+  <a class="appbar-brand" href="#phase1">
+    <span class="mark" aria-hidden="true">&#9878;&#65039;</span>
+    <span class="name">Court Guide</span>
+  </a>
+
+  <div class="appbar-where">
+    <span class="appbar-kicker" id="appbarKicker">Phase 1 of 5</span>
+    <span class="appbar-phase" id="appbarPhase">Case Initiation</span>
+  </div>
+
+  <div class="appbar-search">
+    <div class="search-bar" id="searchBarDesktop">
+      <label class="visually-hidden" for="searchInput">Search the guide</label>
+      <input type="search" id="searchInput" placeholder="Search the guide&hellip;" autocomplete="off">
+      <span class="search-count" id="searchCount" aria-live="polite"></span>
+      <button class="clear-search" id="clearSearch" type="button" aria-label="Clear search">&times;</button>
+    </div>
+  </div>
+</header>
+
+<!-- =====================================================================
+     SIDEBAR — navigation tree, filters, progress, bookmarks
      ===================================================================== -->
 <div class="layout">
-<nav class="sidebar" id="sidebar">
-  <div style="padding:12px 20px;font-weight:700;color:var(--accent);font-size:0.95rem;">Court Algorithm Guide</div>
-  <div class="sidebar-disclaimer">
-    ⚠️ <strong>Legal Disclaimer:</strong> This guide is for <strong>informational and educational purposes only</strong>. It is <strong>not legal advice</strong>. Court procedures vary by jurisdiction. Always consult a licensed attorney for legal matters.
+<nav class="sidebar" id="sidebar" aria-label="Guide navigation">
+
+  <p class="sidebar-disclaimer">
+    &#9888;&#65039; <strong>Not legal advice.</strong> Educational use only. Court procedures vary by jurisdiction &mdash; consult a licensed attorney.
+  </p>
+
+  <!-- Search relocates here from the app bar on narrow screens -->
+  <div class="sidebar-search" id="searchHome"></div>
+
+  <!-- ---------------- Phase tree ---------------- -->
+  <h2 class="sidebar-title" id="navPhasesLabel">Phases</h2>
+  <div class="sidebar-nav" role="list" aria-labelledby="navPhasesLabel">
+
+    <a class="nav-phase" href="#phase1" data-phase="phase1"><span class="num">1</span> Case Initiation</a>
+
+    <a class="nav-phase" href="#phase2" data-phase="phase2"><span class="num">2</span> Pre-Trial</a>
+    <div class="nav-sublist" data-sub-for="phase2">
+      <a class="sub" href="#phase2a">Arraignment</a>
+      <a class="sub" href="#phase2b">Discovery</a>
+      <a class="sub" href="#phase2c">Pre-Trial Motions</a>
+      <a class="sub criminal-only" href="#phase2d">Plea Bargaining</a>
+      <a class="sub" href="#phase2e">Pre-Trial Conference</a>
+    </div>
+
+    <a class="nav-phase" href="#phase3" data-phase="phase3"><span class="num">3</span> Trial</a>
+    <div class="nav-sublist" data-sub-for="phase3">
+      <a class="sub" href="#phase3a">Jury Selection</a>
+      <a class="sub" href="#phase3b">Opening Statements</a>
+      <a class="sub" href="#phase3c">Case-in-Chief</a>
+      <a class="sub" href="#phase3d">Defense Case</a>
+      <a class="sub" href="#phase3e">Closing Arguments</a>
+      <a class="sub" href="#phase3f">Jury Instructions</a>
+      <a class="sub" href="#phase3g">Deliberation &amp; Verdict</a>
+    </div>
+
+    <a class="nav-phase" href="#phase4" data-phase="phase4"><span class="num">4</span> Resolution &amp; Sentencing</a>
+    <div class="nav-sublist" data-sub-for="phase4">
+      <a class="sub criminal-only" href="#phase4a">Criminal Sentencing</a>
+      <a class="sub civil-only" href="#phase4b">Civil Judgment</a>
+    </div>
+
+    <a class="nav-phase" href="#phase5" data-phase="phase5"><span class="num">5</span> Appeals</a>
+
+    <a class="nav-phase" href="#glossary" data-phase="glossary"><span class="num" aria-hidden="true">&#128214;</span> Glossary</a>
   </div>
+
+  <!-- ---------------- Filters ---------------- -->
   <details class="sidebar-panel" id="controlsPanel" open>
-    <summary>Settings &amp; Search</summary>
+    <summary>View &amp; Filters</summary>
     <div class="panel-body sidebar-controls-body">
-      <div class="toggle-group" id="caseToggle">
-        <button class="active" data-case="criminal">Criminal</button>
-        <button data-case="civil">Civil</button>
+
+      <div class="control-group">
+        <span class="control-label" id="caseLabel">Case type</span>
+        <div class="toggle-group" id="caseToggle" role="group" aria-labelledby="caseLabel">
+          <button type="button" data-case="criminal" aria-pressed="true">Criminal</button>
+          <button type="button" data-case="civil" aria-pressed="false">Civil</button>
+        </div>
       </div>
-      <select class="role-select" id="roleSelect">
-        <option value="observer" selected>👁️ Observer / Gallery</option>
-        <option value="judge">⚖️ Judge</option>
-        <option value="prosecution">📋 Prosecution / Plaintiff</option>
-        <option value="defense">🛡️ Defense Attorney</option>
-        <option value="defendant">👤 Defendant</option>
-        <option value="witness">🗣️ Witness</option>
-      </select>
-      <select class="jurisdiction-select" id="jurisdictionSelect">
-        <option value="both" selected>🏛️ All Jurisdictions</option>
-        <option value="federal">Federal</option>
-        <option value="state">State</option>
-      </select>
-      <div class="toggle-group" id="themeToggle">
-        <button class="active" data-theme="dark">🌙 Dark</button>
-        <button data-theme="light">☀️ Light</button>
+
+      <div class="control-group">
+        <label class="control-label" for="roleSelect">Whose seat are you in?</label>
+        <select class="role-select" id="roleSelect">
+          <option value="observer" selected>&#128065;&#65039; Observer / Gallery</option>
+          <option value="judge">&#9878;&#65039; Judge</option>
+          <option value="prosecution">&#128203; Prosecution / Plaintiff</option>
+          <option value="defense">&#128737;&#65039; Defense Attorney</option>
+          <option value="defendant">&#128100; Defendant</option>
+          <option value="witness">&#128483;&#65039; Witness</option>
+        </select>
+        <p class="control-hint">Highlights the sections written for that role. Nothing is hidden.</p>
       </div>
-      <div class="search-bar">
-        <input type="text" id="searchInput" placeholder="Search the guide…" aria-label="Search">
-        <button class="clear-search" id="clearSearch">✕</button>
+
+      <div class="control-group">
+        <label class="control-label" for="jurisdictionSelect">Jurisdiction</label>
+        <select class="jurisdiction-select" id="jurisdictionSelect">
+          <option value="both" selected>&#127963;&#65039; All Jurisdictions</option>
+          <option value="federal">Federal</option>
+          <option value="state">State</option>
+        </select>
       </div>
+
+      <div class="control-group">
+        <span class="control-label" id="themeLabel">Appearance</span>
+        <div class="toggle-group" id="themeToggle" role="group" aria-labelledby="themeLabel">
+          <button type="button" data-theme="dark" aria-pressed="true">&#127769; Dark</button>
+          <button type="button" data-theme="light" aria-pressed="false">&#9728;&#65039; Light</button>
+        </div>
+      </div>
+
     </div>
   </details>
-  <div class="phase-progress" id="phaseProgress">
-    <button data-target="phase1" class="active">1. Initiation</button>
-    <button data-target="phase2">2. Pre-Trial</button>
-    <button data-target="phase3">3. Trial</button>
-    <button data-target="phase4">4. Resolution</button>
-    <button data-target="phase5">5. Appeals</button>
-  </div>
-  <div class="sidebar-title">Phases</div>
-  <a href="#phase1">1. Case Initiation</a>
-  <a href="#phase2">2. Pre-Trial</a>
-  <a href="#p2-arraignment" class="sub">Arraignment</a>
-  <a href="#p2-discovery" class="sub">Discovery</a>
-  <a href="#p2-motions" class="sub">Pre-Trial Motions</a>
-  <a href="#p2-plea" class="sub">Plea Bargaining</a>
-  <a href="#p2-conference" class="sub">Pre-Trial Conference</a>
-  <a href="#phase3">3. Trial</a>
-  <a href="#p3-voir-dire" class="sub">Jury Selection</a>
-  <a href="#p3-openings" class="sub">Opening Statements</a>
-  <a href="#p3-case-in-chief" class="sub">Case-in-Chief</a>
-  <a href="#p3-direct" class="sub">Direct Examination</a>
-  <a href="#p3-cross" class="sub">Cross-Examination</a>
-  <a href="#p3-defense-case" class="sub">Defense Case</a>
-  <a href="#p3-closings" class="sub">Closing Arguments</a>
-  <a href="#p3-instructions" class="sub">Jury Instructions</a>
-  <a href="#p3-deliberation" class="sub">Deliberation &amp; Verdict</a>
-  <a href="#phase4">4. Sentencing &amp; Resolution</a>
-  <a href="#p4-sentencing" class="sub">Sentencing Hearing</a>
-  <a href="#p4-civil-judgment" class="sub">Civil Judgment</a>
-  <a href="#phase5">5. Appeals</a>
-  <a href="#p5-notice" class="sub">Notice of Appeal</a>
-  <a href="#p5-briefing" class="sub">Briefing</a>
-  <a href="#p5-oral-arg" class="sub">Oral Argument</a>
-  <a href="#glossary">Glossary</a>
 
-  <div class="sidebar-title" style="margin-top:16px;">Personal</div>
+  <!-- ---------------- Progress ---------------- -->
   <details class="sidebar-panel" id="progressPanel">
     <summary>Progress Tracker</summary>
     <div class="panel-body">
+      <div class="progress-head">
+        <span class="control-label">Phases covered</span>
+        <span class="progress-count" id="progressCount">0 / 5</span>
+      </div>
       <div class="progress-bar-mini"><div class="fill" id="progressFill"></div></div>
       <ul class="progress-list">
-        <li><label><input type="checkbox" data-phase="phase1"> Phase 1: Initiation</label></li>
-        <li><label><input type="checkbox" data-phase="phase2"> Phase 2: Pre-Trial</label></li>
-        <li><label><input type="checkbox" data-phase="phase3"> Phase 3: Trial</label></li>
-        <li><label><input type="checkbox" data-phase="phase4"> Phase 4: Resolution</label></li>
-        <li><label><input type="checkbox" data-phase="phase5"> Phase 5: Appeals</label></li>
+        <li><label><input type="checkbox" data-phase="phase1"> Phase 1 &mdash; Initiation</label></li>
+        <li><label><input type="checkbox" data-phase="phase2"> Phase 2 &mdash; Pre-Trial</label></li>
+        <li><label><input type="checkbox" data-phase="phase3"> Phase 3 &mdash; Trial</label></li>
+        <li><label><input type="checkbox" data-phase="phase4"> Phase 4 &mdash; Resolution</label></li>
+        <li><label><input type="checkbox" data-phase="phase5"> Phase 5 &mdash; Appeals</label></li>
       </ul>
     </div>
   </details>
+
+  <!-- ---------------- Bookmarks ---------------- -->
   <details class="sidebar-panel" id="bookmarksPanel">
     <summary>Bookmarks</summary>
     <div class="panel-body">
       <ul class="bookmarks-list" id="bookmarksList"></ul>
-      <div class="bookmarks-empty" id="bookmarksEmpty">No bookmarks yet. Click 🔖 on any section to bookmark it.</div>
+      <p class="bookmarks-empty" id="bookmarksEmpty">No bookmarks yet. Tap the &#128278; on any section to pin it here.</p>
+      <button type="button" class="panel-action" id="resetData">Clear notes, bookmarks &amp; progress</button>
     </div>
   </details>
+
 </nav>
 
-<div class="sidebar-overlay" id="sidebarOverlay"></div>
-<button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle navigation">☰</button>
+<div class="sidebar-overlay" id="sidebarOverlay" hidden></div>
 
 <!-- =====================================================================
      MAIN CONTENT AREA
      ===================================================================== -->
-<main class="main-content" id="mainContent">
+<main class="main-content" id="mainContent" tabindex="-1">
+<div class="content-wrap">
+
+<!-- Sticky "you are here" stepper -->
+<nav class="stepper" id="phaseProgress" aria-label="Phase progress">
+  <button type="button" class="stepper-step" data-target="phase1" aria-current="step"><span class="num"><span>1</span></span><span class="name">Initiation</span></button>
+  <button type="button" class="stepper-step" data-target="phase2"><span class="num"><span>2</span></span><span class="name">Pre-Trial</span></button>
+  <button type="button" class="stepper-step" data-target="phase3"><span class="num"><span>3</span></span><span class="name">Trial</span></button>
+  <button type="button" class="stepper-step" data-target="phase4"><span class="num"><span>4</span></span><span class="name">Resolution</span></button>
+  <button type="button" class="stepper-step" data-target="phase5"><span class="num"><span>5</span></span><span class="name">Appeals</span></button>
+</nav>
 
 <div class="page-header">
   <h1>Court Procedure Algorithm Guide</h1>
-  <p class="subtitle">Real-time step-by-step guide for court cam watchers and gallery observers</p>
-  <p class="subtitle" style="margin-top:4px;font-size:0.8rem;">U.S. Federal Rules baseline with common state variations noted</p>
+  <p class="subtitle">A step-by-step companion for watching a court cam or sitting in the gallery. U.S. federal rules as the baseline, with common state variations noted.</p>
 </div>
 
 <!-- =====================================================================
-     INTERACTIVE FLOWCHART — Case Flow Navigator
+     CASE FLOW MAP — jump to any stage; reflows to a vertical stack on
+     narrow screens instead of shrinking to unreadable text.
      ===================================================================== -->
-<div class="flowchart-container" id="flowchart">
-  <svg viewBox="0 0 960 220" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-        <polygon points="0 0, 8 3, 0 6" fill="var(--text-muted)"/>
-      </marker>
-    </defs>
+<details class="flowmap" id="flowmap" open>
+  <summary><span aria-hidden="true">&#128506;&#65039;</span> Case flow &mdash; tap a stage to jump</summary>
+  <div class="flowmap-body">
+    <ol class="flowmap-track">
+      <li class="fc-step">
+        <button type="button" class="fc-node fc-active" data-phase="phase1">
+          <span class="fc-num">Phase 1</span>
+          <span class="fc-name">Case Filing</span>
+          <span class="fc-sub">Charges or complaint filed; first appearance</span>
+        </button>
+      </li>
+      <li class="fc-link" aria-hidden="true"></li>
+      <li class="fc-step">
+        <button type="button" class="fc-node" data-phase="phase2">
+          <span class="fc-num">Phase 2</span>
+          <span class="fc-name">Pre-Trial</span>
+          <span class="fc-sub">Arraignment, discovery, motions, plea talks</span>
+        </button>
+      </li>
+      <li class="fc-link" aria-hidden="true"></li>
+      <li class="fc-step">
+        <button type="button" class="fc-node" data-phase="phase3">
+          <span class="fc-num">Phase 3</span>
+          <span class="fc-name">Trial</span>
+          <span class="fc-sub">Jury selection through verdict</span>
+        </button>
+      </li>
+      <li class="fc-link" aria-hidden="true"></li>
+      <li class="fc-step">
+        <button type="button" class="fc-node" data-phase="phase4">
+          <span class="fc-num">Phase 4</span>
+          <span class="fc-name">Resolution</span>
+          <span class="fc-sub">Sentencing or civil judgment</span>
+        </button>
+      </li>
+      <li class="fc-link" aria-hidden="true"></li>
+      <li class="fc-step">
+        <button type="button" class="fc-node" data-phase="phase5">
+          <span class="fc-num">Phase 5</span>
+          <span class="fc-name">Appeals</span>
+          <span class="fc-sub">Review for legal error by a higher court</span>
+        </button>
+      </li>
+    </ol>
 
-    <!-- Phase 1: Case Initiation -->
-    <g class="fc-node fc-active" data-phase="phase1" transform="translate(10,60)">
-      <rect x="0" y="0" width="100" height="50" rx="8" fill="var(--bg-surface)" stroke="var(--border)" stroke-width="1.5"/>
-      <text x="50" y="22" text-anchor="middle" font-weight="600">Case</text>
-      <text x="50" y="36" text-anchor="middle">Filing</text>
-    </g>
-    <line class="fc-arrow" x1="110" y1="85" x2="140" y2="85"/>
-
-    <g class="fc-node" data-phase="phase1" transform="translate(140,60)">
-      <rect x="0" y="0" width="100" height="50" rx="8" fill="var(--bg-surface)" stroke="var(--border)" stroke-width="1.5"/>
-      <text x="50" y="22" text-anchor="middle" font-weight="600">Initial</text>
-      <text x="50" y="36" text-anchor="middle">Appearance</text>
-    </g>
-    <line class="fc-arrow" x1="240" y1="85" x2="270" y2="85"/>
-
-    <!-- Phase 2: Pre-Trial -->
-    <g class="fc-node" data-phase="phase2" transform="translate(270,60)">
-      <rect x="0" y="0" width="100" height="50" rx="8" fill="var(--bg-surface)" stroke="var(--border)" stroke-width="1.5"/>
-      <text x="50" y="22" text-anchor="middle" font-weight="600">Pre-Trial</text>
-      <text x="50" y="36" text-anchor="middle">Discovery</text>
-    </g>
-    <line class="fc-arrow" x1="370" y1="85" x2="410" y2="85"/>
-
-    <!-- Decision: Plea? -->
-    <g class="fc-node" data-phase="phase2" transform="translate(410,55)">
-      <polygon points="50,0 100,30 50,60 0,30" fill="var(--bg-surface)" stroke="var(--accent-dim, var(--border))" stroke-width="1.5"/>
-      <text x="50" y="27" text-anchor="middle" font-weight="600" font-size="10">Plea</text>
-      <text x="50" y="39" text-anchor="middle" font-size="9">Deal?</text>
-    </g>
-    <!-- Yes arrow (down to sentencing) -->
-    <line class="fc-arrow" x1="460" y1="115" x2="460" y2="170"/>
-    <text class="fc-label" x="468" y="148">Yes</text>
-    <!-- No arrow (right to trial) -->
-    <line class="fc-arrow" x1="510" y1="85" x2="550" y2="85"/>
-    <text class="fc-label" x="520" y="78">No</text>
-
-    <!-- Phase 3: Trial -->
-    <g class="fc-node" data-phase="phase3" transform="translate(550,60)">
-      <rect x="0" y="0" width="100" height="50" rx="8" fill="var(--bg-surface)" stroke="var(--border)" stroke-width="1.5"/>
-      <text x="50" y="22" text-anchor="middle" font-weight="600">Trial</text>
-      <text x="50" y="36" text-anchor="middle">Proceedings</text>
-    </g>
-    <line class="fc-arrow" x1="650" y1="85" x2="690" y2="85"/>
-
-    <!-- Decision: Guilty? -->
-    <g class="fc-node" data-phase="phase3" transform="translate(690,55)">
-      <polygon points="50,0 100,30 50,60 0,30" fill="var(--bg-surface)" stroke="var(--accent-dim, var(--border))" stroke-width="1.5"/>
-      <text x="50" y="27" text-anchor="middle" font-weight="600" font-size="10">Guilty</text>
-      <text x="50" y="39" text-anchor="middle" font-size="9">Verdict?</text>
-    </g>
-    <!-- Yes arrow (down to sentencing) -->
-    <line class="fc-arrow" x1="740" y1="115" x2="740" y2="170"/>
-    <text class="fc-label" x="748" y="148">Yes</text>
-    <!-- No arrow (to case closed) -->
-    <line class="fc-arrow" x1="790" y1="85" x2="920" y2="85"/>
-    <text class="fc-label" x="830" y="78">Not Guilty</text>
-
-    <!-- Case Closed (acquittal) -->
-    <g transform="translate(920,70)">
-      <ellipse cx="20" cy="15" rx="20" ry="15" fill="var(--bg-surface)" stroke="var(--border)" stroke-width="1.5"/>
-      <text x="20" y="19" text-anchor="middle" font-size="9" font-weight="600">End</text>
-    </g>
-
-    <!-- Phase 4: Sentencing (bottom row) -->
-    <g class="fc-node" data-phase="phase4" transform="translate(550,170)">
-      <rect x="0" y="0" width="100" height="40" rx="8" fill="var(--bg-surface)" stroke="var(--border)" stroke-width="1.5"/>
-      <text x="50" y="25" text-anchor="middle" font-weight="600">Sentencing</text>
-    </g>
-    <!-- Arrows pointing into sentencing from plea and verdict -->
-    <line class="fc-arrow" x1="460" y1="190" x2="550" y2="190"/>
-    <line class="fc-arrow" x1="650" y1="190" x2="740" y2="170" style="display:none"/>
-
-    <!-- Phase 5: Appeals -->
-    <line class="fc-arrow" x1="650" y1="190" x2="690" y2="190"/>
-    <g class="fc-node" data-phase="phase5" transform="translate(690,170)">
-      <rect x="0" y="0" width="100" height="40" rx="8" fill="var(--bg-surface)" stroke="var(--border)" stroke-width="1.5"/>
-      <text x="50" y="25" text-anchor="middle" font-weight="600">Appeals</text>
-    </g>
-
-    <!-- Arrow from sentencing down and then to appeals is already implied by position -->
-    <!-- Arrow from guilty verdict down to sentencing -->
-    <line class="fc-arrow" x1="740" y1="170" x2="740" y2="190" style="display:none"/>
-  </svg>
-</div>
+    <p class="fc-branch">
+      <span><b>Branches:</b></span>
+      <span>Plea deal accepted &rarr; skips Trial, straight to Resolution.</span>
+      <span>Not guilty verdict &rarr; case ends, no sentencing.</span>
+      <span>Guilty verdict &rarr; Resolution, then Appeals.</span>
+    </p>
+  </div>
+</details>
 
 <!-- =====================================================================
      PHASE 1: CASE INITIATION
      ===================================================================== -->
 <div class="phase phase-tab active" id="phase1">
-<div class="phase-card">
-  <div class="phase-hdr" onclick="togglePhase(this)">
-    <span class="icon">📋</span>
+<div class="phase-card phase-card--top">
+  <header class="phase-tab-header">
+    <span class="icon" aria-hidden="true">📋</span>
     <div>
-      <div class="phase-num">Phase 1</div>
-      <div class="label">Case Initiation</div>
+      <p class="phase-num">Phase 1</p>
+      <h2 class="label">Case Initiation</h2>
     </div>
-    <svg class="chevron" viewBox="0 0 20 20" fill="currentColor"><path d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
-  </div>
-  <div class="phase-body">
+  </header>
+  <div class="phase-body phase-body--static">
     <div class="phase-body-inner">
 
       <!-- Recognition Cues -->
@@ -437,27 +476,26 @@
     </div>
   </div>
 </div>
-</div>
 <details class="phase-notes">
   <summary>My Notes — Phase 1: Case Initiation</summary>
   <textarea data-phase="phase1" placeholder="Type your personal notes for Phase 1: Case Initiation here..."></textarea>
 </details>
+</div>
 <!-- END PHASE 1 -->
 
 <!-- =====================================================================
      PHASE 2: PRE-TRIAL
      ===================================================================== -->
 <div class="phase phase-tab" id="phase2">
-<div class="phase-card">
-  <div class="phase-hdr" onclick="togglePhase(this)">
-    <span class="icon">⚙️</span>
+<div class="phase-card phase-card--top">
+  <header class="phase-tab-header">
+    <span class="icon" aria-hidden="true">⚙️</span>
     <div>
-      <div class="phase-num">Phase 2</div>
-      <div class="label">Pre-Trial</div>
+      <p class="phase-num">Phase 2</p>
+      <h2 class="label">Pre-Trial</h2>
     </div>
-    <svg class="chevron" viewBox="0 0 20 20" fill="currentColor"><path d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
-  </div>
-  <div class="phase-body">
+  </header>
+  <div class="phase-body phase-body--static">
     <div class="phase-body-inner">
 
       <div class="section-block recognition">
@@ -475,14 +513,14 @@
 <!-- ============= SUB-PHASE 2A: ARRAIGNMENT ============= -->
 <div class="sub-phase" id="phase2a">
   <div class="phase-card sub">
-    <div class="phase-hdr sub" onclick="togglePhase(this)">
+    <button type="button" class="phase-hdr sub" aria-expanded="false">
       <span class="icon">📢</span>
       <div>
         <div class="phase-num">Phase 2A</div>
         <div class="label">Arraignment</div>
       </div>
       <svg class="chevron" viewBox="0 0 20 20" fill="currentColor"><path d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
-    </div>
+    </button>
     <div class="phase-body">
       <div class="phase-body-inner">
 
@@ -684,14 +722,14 @@
 <!-- ============= SUB-PHASE 2B: DISCOVERY ============= -->
 <div class="sub-phase" id="phase2b">
   <div class="phase-card sub">
-    <div class="phase-hdr sub" onclick="togglePhase(this)">
+    <button type="button" class="phase-hdr sub" aria-expanded="false">
       <span class="icon">🔍</span>
       <div>
         <div class="phase-num">Phase 2B</div>
         <div class="label">Discovery</div>
       </div>
       <svg class="chevron" viewBox="0 0 20 20" fill="currentColor"><path d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
-    </div>
+    </button>
     <div class="phase-body">
       <div class="phase-body-inner">
 
@@ -887,14 +925,14 @@
 <!-- ============= SUB-PHASE 2C: PRE-TRIAL MOTIONS ============= -->
 <div class="sub-phase" id="phase2c">
   <div class="phase-card sub">
-    <div class="phase-hdr sub" onclick="togglePhase(this)">
+    <button type="button" class="phase-hdr sub" aria-expanded="false">
       <span class="icon">📝</span>
       <div>
         <div class="phase-num">Phase 2C</div>
         <div class="label">Pre-Trial Motions &amp; Motions in Limine</div>
       </div>
       <svg class="chevron" viewBox="0 0 20 20" fill="currentColor"><path d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
-    </div>
+    </button>
     <div class="phase-body">
       <div class="phase-body-inner">
 
@@ -1067,14 +1105,14 @@
 <!-- ============= SUB-PHASE 2D: PLEA BARGAINING ============= -->
 <div class="sub-phase criminal-only" id="phase2d">
   <div class="phase-card sub">
-    <div class="phase-hdr sub" onclick="togglePhase(this)">
+    <button type="button" class="phase-hdr sub" aria-expanded="false">
       <span class="icon">🤝</span>
       <div>
         <div class="phase-num">Phase 2D</div>
         <div class="label">Plea Bargaining (Criminal Only)</div>
       </div>
       <svg class="chevron" viewBox="0 0 20 20" fill="currentColor"><path d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
-    </div>
+    </button>
     <div class="phase-body">
       <div class="phase-body-inner">
 
@@ -1227,14 +1265,14 @@
 <!-- ============= SUB-PHASE 2E: PRE-TRIAL CONFERENCE ============= -->
 <div class="sub-phase" id="phase2e">
   <div class="phase-card sub">
-    <div class="phase-hdr sub" onclick="togglePhase(this)">
+    <button type="button" class="phase-hdr sub" aria-expanded="false">
       <span class="icon">📅</span>
       <div>
         <div class="phase-num">Phase 2E</div>
         <div class="label">Pre-Trial Conference</div>
       </div>
       <svg class="chevron" viewBox="0 0 20 20" fill="currentColor"><path d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
-    </div>
+    </button>
     <div class="phase-body">
       <div class="phase-body-inner">
 
@@ -1324,27 +1362,26 @@
     </div>
   </div>
 </div>
-</div>
 <details class="phase-notes">
   <summary>My Notes — Phase 2: Pre-Trial</summary>
   <textarea data-phase="phase2" placeholder="Type your personal notes for Phase 2: Pre-Trial here..."></textarea>
 </details>
+</div>
 <!-- END PHASE 2 -->
 
 <!-- =====================================================================
      PHASE 3: TRIAL
      ===================================================================== -->
 <div class="phase phase-tab" id="phase3">
-<div class="phase-card">
-  <div class="phase-hdr" onclick="togglePhase(this)">
-    <span class="icon">⚖️</span>
+<div class="phase-card phase-card--top">
+  <header class="phase-tab-header">
+    <span class="icon" aria-hidden="true">⚖️</span>
     <div>
-      <div class="phase-num">Phase 3</div>
-      <div class="label">Trial</div>
+      <p class="phase-num">Phase 3</p>
+      <h2 class="label">Trial</h2>
     </div>
-    <svg class="chevron" viewBox="0 0 20 20" fill="currentColor"><path d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
-  </div>
-  <div class="phase-body">
+  </header>
+  <div class="phase-body phase-body--static">
     <div class="phase-body-inner">
 
       <div class="section-block recognition">
@@ -1362,14 +1399,14 @@
 <!-- ============= SUB-PHASE 3A: VOIR DIRE / JURY SELECTION ============= -->
 <div class="sub-phase" id="phase3a">
   <div class="phase-card sub">
-    <div class="phase-hdr sub" onclick="togglePhase(this)">
+    <button type="button" class="phase-hdr sub" aria-expanded="false">
       <span class="icon">👥</span>
       <div>
         <div class="phase-num">Phase 3A</div>
         <div class="label">Voir Dire (Jury Selection)</div>
       </div>
       <svg class="chevron" viewBox="0 0 20 20" fill="currentColor"><path d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
-    </div>
+    </button>
     <div class="phase-body">
       <div class="phase-body-inner">
 
@@ -1508,14 +1545,14 @@
 <!-- ============= SUB-PHASE 3B: OPENING STATEMENTS ============= -->
 <div class="sub-phase" id="phase3b">
   <div class="phase-card sub">
-    <div class="phase-hdr sub" onclick="togglePhase(this)">
+    <button type="button" class="phase-hdr sub" aria-expanded="false">
       <span class="icon">🎤</span>
       <div>
         <div class="phase-num">Phase 3B</div>
         <div class="label">Opening Statements</div>
       </div>
       <svg class="chevron" viewBox="0 0 20 20" fill="currentColor"><path d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
-    </div>
+    </button>
     <div class="phase-body">
       <div class="phase-body-inner">
 
@@ -1637,14 +1674,14 @@
 <!-- ============= SUB-PHASE 3C: PROSECUTION/PLAINTIFF CASE-IN-CHIEF ============= -->
 <div class="sub-phase" id="phase3c">
   <div class="phase-card sub">
-    <div class="phase-hdr sub" onclick="togglePhase(this)">
+    <button type="button" class="phase-hdr sub" aria-expanded="false">
       <span class="icon">📋</span>
       <div>
         <div class="phase-num">Phase 3C</div>
         <div class="label">Prosecution / Plaintiff Case-in-Chief (Direct &amp; Cross Examination)</div>
       </div>
       <svg class="chevron" viewBox="0 0 20 20" fill="currentColor"><path d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
-    </div>
+    </button>
     <div class="phase-body">
       <div class="phase-body-inner">
 
@@ -1876,14 +1913,14 @@
 <!-- ============= SUB-PHASE 3D: DEFENSE CASE ============= -->
 <div class="sub-phase" id="phase3d">
   <div class="phase-card sub">
-    <div class="phase-hdr sub" onclick="togglePhase(this)">
+    <button type="button" class="phase-hdr sub" aria-expanded="false">
       <span class="icon">🛡️</span>
       <div>
         <div class="phase-num">Phase 3D</div>
         <div class="label">Defense Case &amp; Rebuttal</div>
       </div>
       <svg class="chevron" viewBox="0 0 20 20" fill="currentColor"><path d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
-    </div>
+    </button>
     <div class="phase-body">
       <div class="phase-body-inner">
 
@@ -1984,14 +2021,14 @@
 <!-- ============= SUB-PHASE 3E: CLOSING ARGUMENTS ============= -->
 <div class="sub-phase" id="phase3e">
   <div class="phase-card sub">
-    <div class="phase-hdr sub" onclick="togglePhase(this)">
+    <button type="button" class="phase-hdr sub" aria-expanded="false">
       <span class="icon">🏛️</span>
       <div>
         <div class="phase-num">Phase 3E</div>
         <div class="label">Closing Arguments</div>
       </div>
       <svg class="chevron" viewBox="0 0 20 20" fill="currentColor"><path d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
-    </div>
+    </button>
     <div class="phase-body">
       <div class="phase-body-inner">
 
@@ -2084,14 +2121,14 @@
 <!-- ============= SUB-PHASE 3F: JURY INSTRUCTIONS ============= -->
 <div class="sub-phase" id="phase3f">
   <div class="phase-card sub">
-    <div class="phase-hdr sub" onclick="togglePhase(this)">
+    <button type="button" class="phase-hdr sub" aria-expanded="false">
       <span class="icon">📖</span>
       <div>
         <div class="phase-num">Phase 3F</div>
         <div class="label">Jury Instructions (Charge to the Jury)</div>
       </div>
       <svg class="chevron" viewBox="0 0 20 20" fill="currentColor"><path d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
-    </div>
+    </button>
     <div class="phase-body">
       <div class="phase-body-inner">
 
@@ -2145,14 +2182,14 @@
 <!-- ============= SUB-PHASE 3G: DELIBERATION & VERDICT ============= -->
 <div class="sub-phase" id="phase3g">
   <div class="phase-card sub">
-    <div class="phase-hdr sub" onclick="togglePhase(this)">
+    <button type="button" class="phase-hdr sub" aria-expanded="false">
       <span class="icon">🗳️</span>
       <div>
         <div class="phase-num">Phase 3G</div>
         <div class="label">Jury Deliberation &amp; Verdict</div>
       </div>
       <svg class="chevron" viewBox="0 0 20 20" fill="currentColor"><path d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
-    </div>
+    </button>
     <div class="phase-body">
       <div class="phase-body-inner">
 
@@ -2258,27 +2295,26 @@
     </div>
   </div>
 </div>
-</div>
 <details class="phase-notes">
   <summary>My Notes — Phase 3: Trial</summary>
   <textarea data-phase="phase3" placeholder="Type your personal notes for Phase 3: Trial here..."></textarea>
 </details>
+</div>
 <!-- END PHASE 3 -->
 
 <!-- =====================================================================
      PHASE 4: RESOLUTION & SENTENCING
      ===================================================================== -->
 <div class="phase phase-tab" id="phase4">
-<div class="phase-card">
-  <div class="phase-hdr" onclick="togglePhase(this)">
-    <span class="icon">⚖️</span>
+<div class="phase-card phase-card--top">
+  <header class="phase-tab-header">
+    <span class="icon" aria-hidden="true">⚖️</span>
     <div>
-      <div class="phase-num">Phase 4</div>
-      <div class="label">Resolution &amp; Sentencing</div>
+      <p class="phase-num">Phase 4</p>
+      <h2 class="label">Resolution &amp; Sentencing</h2>
     </div>
-    <svg class="chevron" viewBox="0 0 20 20" fill="currentColor"><path d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
-  </div>
-  <div class="phase-body">
+  </header>
+  <div class="phase-body phase-body--static">
     <div class="phase-body-inner">
 
       <div class="section-block recognition">
@@ -2297,14 +2333,14 @@
 <!-- ============= SUB-PHASE 4A: CRIMINAL SENTENCING ============= -->
 <div class="sub-phase criminal-only" id="phase4a">
   <div class="phase-card sub">
-    <div class="phase-hdr sub" onclick="togglePhase(this)">
+    <button type="button" class="phase-hdr sub" aria-expanded="false">
       <span class="icon">⚖️</span>
       <div>
         <div class="phase-num">Phase 4A</div>
         <div class="label">Criminal Sentencing (Priority Detail)</div>
       </div>
       <svg class="chevron" viewBox="0 0 20 20" fill="currentColor"><path d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
-    </div>
+    </button>
     <div class="phase-body">
       <div class="phase-body-inner">
 
@@ -2468,14 +2504,14 @@
 <!-- ============= SUB-PHASE 4B: CIVIL JUDGMENT ============= -->
 <div class="sub-phase civil-only" id="phase4b">
   <div class="phase-card sub">
-    <div class="phase-hdr sub" onclick="togglePhase(this)">
+    <button type="button" class="phase-hdr sub" aria-expanded="false">
       <span class="icon">💰</span>
       <div>
         <div class="phase-num">Phase 4B</div>
         <div class="label">Civil Judgment &amp; Remedies</div>
       </div>
       <svg class="chevron" viewBox="0 0 20 20" fill="currentColor"><path d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
-    </div>
+    </button>
     <div class="phase-body">
       <div class="phase-body-inner">
 
@@ -2527,27 +2563,26 @@
     </div>
   </div>
 </div>
-</div>
 <details class="phase-notes">
   <summary>My Notes — Phase 4: Resolution</summary>
   <textarea data-phase="phase4" placeholder="Type your personal notes for Phase 4: Resolution here..."></textarea>
 </details>
+</div>
 <!-- END PHASE 4 -->
 
 <!-- =====================================================================
      PHASE 5: APPEALS
      ===================================================================== -->
 <div class="phase phase-tab" id="phase5">
-<div class="phase-card">
-  <div class="phase-hdr" onclick="togglePhase(this)">
-    <span class="icon">📤</span>
+<div class="phase-card phase-card--top">
+  <header class="phase-tab-header">
+    <span class="icon" aria-hidden="true">📤</span>
     <div>
-      <div class="phase-num">Phase 5</div>
-      <div class="label">Appeals</div>
+      <p class="phase-num">Phase 5</p>
+      <h2 class="label">Appeals</h2>
     </div>
-    <svg class="chevron" viewBox="0 0 20 20" fill="currentColor"><path d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
-  </div>
-  <div class="phase-body">
+  </header>
+  <div class="phase-body phase-body--static">
     <div class="phase-body-inner">
 
       <div class="section-block recognition">
@@ -2709,32 +2744,43 @@
     </div>
   </div>
 </div>
-</div>
 <details class="phase-notes">
   <summary>My Notes — Phase 5: Appeals</summary>
   <textarea data-phase="phase5" placeholder="Type your personal notes for Phase 5: Appeals here..."></textarea>
 </details>
+</div>
 <!-- END PHASE 5 -->
 
 <!-- =====================================================================
-     GLOSSARY SECTION
+     GLOSSARY
      ===================================================================== -->
 <div class="phase phase-tab" id="glossary">
-<div class="phase-card">
-  <div class="phase-hdr" onclick="togglePhase(this)">
-    <span class="icon">📖</span>
+<div class="phase-card phase-card--top">
+  <header class="phase-tab-header">
+    <span class="icon" aria-hidden="true">&#128214;</span>
     <div>
-      <div class="phase-num">Reference</div>
-      <div class="label">Legal Glossary</div>
+      <p class="phase-num">Reference</p>
+      <h2 class="label">Legal Glossary</h2>
     </div>
-    <svg class="chevron" viewBox="0 0 20 20" fill="currentColor"><path d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
-  </div>
-  <div class="phase-body">
+  </header>
+  <div class="phase-body phase-body--static">
     <div class="phase-body-inner">
-      <p>Click any <span class="term" style="cursor:default;">highlighted term</span> throughout the guide to see its definition. All terms are also listed here for reference.</p>
-      <div id="glossaryList" style="columns:1;column-gap:24px;">
-        <!-- Populated by JavaScript -->
+
+      <p>Any <span class="term" style="cursor:default;">highlighted term</span> in the guide opens its definition. Every term is listed here too.</p>
+
+      <div class="glossary-tools">
+        <div class="search-bar" id="glossaryFilterBar">
+          <label class="visually-hidden" for="glossaryFilter">Filter glossary terms</label>
+          <input type="search" id="glossaryFilter" placeholder="Filter terms&hellip;" autocomplete="off">
+          <button class="clear-search" id="glossaryFilterClear" type="button" aria-label="Clear filter">&times;</button>
+        </div>
       </div>
+
+      <dl class="glossary-list" id="glossaryList">
+        <!-- Populated by js/glossary-ui.js -->
+      </dl>
+      <p class="glossary-empty" id="glossaryEmpty" hidden>No terms match that filter.</p>
+
     </div>
   </div>
 </div>
@@ -2743,19 +2789,20 @@
 <!-- LEGAL DISCLAIMER (FOOTER) -->
 <footer class="disclaimer-footer">
   <div class="disclaimer-box">
-    <strong>⚠️ LEGAL DISCLAIMER</strong>
+    <strong>&#9888;&#65039; LEGAL DISCLAIMER</strong>
     <p>This guide is for <strong>informational and educational purposes only</strong>. It is NOT legal advice. Court procedures vary significantly by jurisdiction (federal vs. state, state vs. state). This guide uses federal rules as a baseline and notes common state variations, but your jurisdiction may differ. Always consult a licensed attorney for legal advice specific to your situation. No attorney-client relationship is created by using this guide.</p>
   </div>
-  <p style="margin-top:16px;font-size:0.8rem;color:var(--text-muted);">Court Procedure Algorithm Guide &mdash; Built for clarity, predictability, and accessibility.</p>
+  <p class="footer-meta">Court Procedure Algorithm Guide &mdash; built for clarity, predictability, and accessibility.</p>
 </footer>
 
+</div><!-- end .content-wrap -->
 </main>
 </div><!-- end .layout -->
 
 <!-- Glossary Modal -->
 <div class="modal-overlay" id="glossaryModal">
-  <div class="modal">
-    <button class="close-btn" id="closeModal">&times;</button>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTerm">
+    <button class="close-btn" id="closeModal" type="button" aria-label="Close definition">&times;</button>
     <h3 id="modalTerm">Term</h3>
     <p id="modalDef">Definition here.</p>
   </div>

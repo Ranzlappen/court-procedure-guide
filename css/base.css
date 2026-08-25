@@ -3,7 +3,12 @@
    ========================================================================== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-html { scroll-behavior: smooth; scroll-padding-top: 20px; }
+html {
+  scroll-behavior: smooth;
+  /* Anchored targets must clear the fixed app bar + sticky stepper */
+  scroll-padding-top: calc(var(--appbar-h) + var(--stepper-h) + 12px);
+  -webkit-text-size-adjust: 100%;
+}
 
 body {
   font-family: var(--font);
@@ -14,6 +19,135 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;
+  /* Nothing in this app is meant to pan sideways */
+  overflow-x: hidden;
+}
+
+/* Locks background scroll while the mobile drawer is open */
+body.nav-open { overflow: hidden; }
+
+/* ==========================================================================
+   FOCUS & SKIP LINK
+   ========================================================================== */
+:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+  border-radius: var(--radius-sm);
+}
+
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: var(--sp-2);
+  z-index: 500;
+  padding: 10px 18px;
+  background: var(--accent);
+  color: var(--accent-contrast);
+  font-weight: 700;
+  font-size: 0.85rem;
+  border-radius: var(--radius);
+  text-decoration: none;
+  transition: top var(--motion-fast);
+}
+.skip-link:focus { top: var(--sp-2); }
+
+/* Visually hidden but available to screen readers */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ==========================================================================
+   APP BAR — persistent orientation strip
+   Holds: drawer toggle, current phase, search affordance.
+   Fixed on every breakpoint so "where am I" is never scrolled away.
+   ========================================================================== */
+.appbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: var(--appbar-h);
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: 0 var(--sp-3);
+  background: var(--bg-nav);
+  border-bottom: 1px solid var(--border);
+  padding-top: env(safe-area-inset-top, 0px);
+  height: calc(var(--appbar-h) + env(safe-area-inset-top, 0px));
+}
+
+.appbar-btn {
+  flex-shrink: 0;
+  width: var(--tap); height: var(--tap);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 1.15rem;
+  cursor: pointer;
+  transition: background var(--transition), color var(--transition);
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.appbar-btn:hover { background: var(--bg-card-hover); color: var(--accent); }
+.appbar-btn[aria-expanded="true"] { background: var(--accent-soft); color: var(--accent); }
+
+/* Brand lockup — collapses to just the mark on narrow screens */
+.appbar-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--accent);
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.appbar-brand .mark { font-size: 1.1rem; }
+
+/* Current-location readout: "Phase 3 of 5 / Trial" */
+.appbar-where {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  line-height: 1.2;
+  padding-left: var(--sp-2);
+  border-left: 1px solid var(--border);
+  margin-left: var(--sp-1);
+}
+.appbar-kicker {
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--text-muted);
+}
+.appbar-phase {
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Search lives in the app bar so it is reachable from anywhere */
+.appbar-search {
+  position: relative;
+  flex: 0 1 320px;
+  min-width: 0;
 }
 
 /* ==========================================================================
@@ -21,130 +155,127 @@ body {
    ========================================================================== */
 .layout {
   display: flex;
+  align-items: flex-start;
   min-height: 100vh;
+  padding-top: calc(var(--appbar-h) + env(safe-area-inset-top, 0px));
 }
 
 /* --- Sidebar --- */
 .sidebar {
   position: fixed;
-  top: 0; left: 0;
+  top: calc(var(--appbar-h) + env(safe-area-inset-top, 0px));
+  left: 0;
   width: var(--sidebar-w);
-  height: 100vh;
+  height: calc(100vh - var(--appbar-h) - env(safe-area-inset-top, 0px));
   background: var(--bg-nav);
   border-right: 1px solid var(--border);
   overflow-y: auto;
+  overscroll-behavior: contain;
   z-index: 200;
-  padding: 12px 0 80px;
-  transition: transform 0.3s ease;
+  padding-bottom: calc(var(--sp-10) + env(safe-area-inset-bottom, 0px));
+  transition: transform var(--motion-med);
   display: flex;
   flex-direction: column;
 }
+
 .sidebar-title {
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.09em;
   color: var(--text-muted);
-  padding: 10px 16px 4px;
-  margin-top: 4px;
+  padding: var(--sp-4) var(--sp-4) var(--sp-1);
 }
+
+/* --- Phase navigation tree --- */
+.sidebar-nav { padding-bottom: var(--sp-2); }
+
 .sidebar a {
-  display: block;
-  padding: 7px 16px 7px 24px;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: 9px var(--sp-4) 9px var(--sp-5);
   color: var(--text-secondary);
   text-decoration: none;
-  font-size: 0.82rem;
+  font-size: 0.83rem;
   border-left: 3px solid transparent;
-  transition: all var(--transition);
+  transition: color var(--transition), background var(--transition), border-color var(--transition);
 }
-.sidebar a:hover, .sidebar a.active {
+.sidebar a:hover {
   color: var(--accent);
-  background: rgba(78,205,196,0.06);
+  background: var(--accent-soft);
+}
+.sidebar a.active,
+.sidebar a[aria-current] {
+  color: var(--accent);
+  background: var(--accent-soft);
   border-left-color: var(--accent);
-}
-.sidebar a.sub { padding-left: 38px; font-size: 0.78rem; }
-
-/* Sidebar brand */
-.sidebar-brand {
-  padding: 8px 16px 10px;
-  font-weight: 700;
-  color: var(--accent);
-  font-size: 0.92rem;
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 4px;
+  font-weight: 600;
 }
 
-/* Sidebar controls section */
-.sidebar-controls {
-  padding: 8px 14px;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-/* Sidebar phase nav */
-.sidebar-nav {
-  flex: 1;
-  overflow-y: auto;
-  padding-bottom: 8px;
-}
-
-/* Sidebar toggle for mobile */
-.sidebar-toggle {
-  display: none;
-  position: fixed;
-  top: 12px; left: 12px;
-  z-index: 300;
-  width: 52px; height: 52px;
+/* Top-level phase rows carry a numbered badge */
+.sidebar a.nav-phase { font-weight: 600; color: var(--text); }
+.sidebar a.nav-phase .num {
+  flex-shrink: 0;
+  width: 20px; height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 50%;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+.sidebar a.nav-phase.active .num,
+.sidebar a.nav-phase[aria-current] .num {
   background: var(--accent);
-  color: var(--bg);
-  border: none;
-  font-size: 1.3rem;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
+  border-color: var(--accent);
+  color: var(--accent-contrast);
 }
 
-/* Sidebar overlay for mobile */
-.sidebar-overlay {
-  display: none;
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.5);
-  z-index: 199;
+/* Sub-phase rows: indented, hidden until their phase is the active one */
+.sidebar a.sub {
+  padding-left: 48px;
+  font-size: 0.79rem;
 }
-.sidebar-overlay.show { display: block; }
+.nav-group { display: contents; }
+.nav-sublist {
+  display: none;
+  border-left: 1px solid var(--border);
+  margin-left: var(--sp-6);
+}
+.nav-sublist.expanded { display: block; }
+.nav-sublist a.sub { padding-left: var(--sp-5); border-left-width: 2px; }
+
+/* --- Drawer affordances (mobile/tablet) --- */
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  z-index: 199;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--motion-med), visibility var(--motion-med);
+}
+.sidebar-overlay.show { opacity: 1; visibility: visible; }
 
 /* --- Main Content --- */
 .main-content {
-  margin-left: var(--sidebar-w);
   flex: 1;
+  /* THE mobile-overflow fix: without this a flex item refuses to shrink below
+     its min-content width, which the pre-wrap decision trees blow far past. */
+  min-width: 0;
+  margin-left: var(--sidebar-w);
+  padding: 0 var(--gutter) var(--sp-10);
+  padding-bottom: calc(var(--sp-10) + env(safe-area-inset-bottom, 0px));
+}
+
+/* Centres the reading column in the space left over beside the sidebar,
+   instead of letting it hug the nav on wide displays. */
+.content-wrap {
+  width: 100%;
   max-width: 920px;
-  padding: 0 24px 60px 24px;
-}
-
-/* Disclaimer inside sidebar */
-.sidebar-disclaimer {
-  padding: 8px 14px;
-  font-size: 0.72rem;
-  line-height: 1.4;
-  color: var(--clr-objection);
-  background: var(--clr-objection-bg);
-  border-bottom: 1px solid rgba(252,165,165,0.3);
-}
-
-/* Phase progress inside sidebar */
-.sidebar .phase-progress {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: 8px 14px;
-  border-bottom: 1px solid var(--border);
-}
-.sidebar .phase-progress button {
-  text-align: left;
+  margin: 0 auto;
 }

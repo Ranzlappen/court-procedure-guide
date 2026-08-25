@@ -1,101 +1,182 @@
 /* ==========================================================================
    RESPONSIVE
+   Breakpoints: 1280 (wide) / 1024 (narrow desktop) / 900 (drawer) /
+                640 (phone) / 400 (small phone) / landscape / print
    ========================================================================== */
 
-/* --- Tablet: sidebar drawer --- */
+/* --- Wide desktop: more room for the reading column --- */
+@media (min-width: 1280px) {
+  :root { --sidebar-w: 300px; --gutter: 40px; }
+  .content-wrap { max-width: 960px; }
+}
+
+/* --- Narrow desktop: tighten the sidebar before dropping it --- */
+@media (max-width: 1024px) {
+  :root { --sidebar-w: 250px; --gutter: 20px; }
+  .stepper-step { font-size: 0.7rem; padding: var(--sp-2); }
+}
+
+/* ==========================================================================
+   TABLET & BELOW — sidebar becomes an overlay drawer
+   ========================================================================== */
 @media (max-width: 900px) {
-  .sidebar { transform: translateX(-100%); }
-  .sidebar.open { transform: translateX(0); }
-  .sidebar-toggle { display: block; }
+  .sidebar {
+    width: min(320px, 86vw);
+    transform: translateX(-100%);
+    box-shadow: none;
+  }
+  .sidebar.open {
+    transform: translateX(0);
+    box-shadow: var(--shadow-pop);
+  }
   .main-content { margin-left: 0; }
+
+  /* The drawer toggle is only meaningful once the sidebar can hide */
+  .nav-toggle { display: inline-flex; }
+
+  /* Search moves out of the app bar into the drawer, where there is room */
+  .appbar-search { display: none; }
+  .sidebar-search { display: block; }
 }
 
-/* --- Small tablet --- */
-@media (max-width: 768px) {
-  .page-header { padding: 24px 0 16px; }
+/* Desktop keeps search in the bar and needs no drawer toggle */
+@media (min-width: 901px) {
+  .nav-toggle { display: none; }
+  .sidebar-search { display: none; }
+  .sidebar-overlay { display: none; }
 }
 
-/* --- Mobile --- */
+/* ==========================================================================
+   PHONE
+   ========================================================================== */
 @media (max-width: 640px) {
-  /* Main content tightening */
-  .main-content { padding: 0 8px 40px; }
-  .page-header h1 { font-size: 1.3rem; }
-
-  /* Cards & accordions */
-  .phase-card { border-radius: var(--radius); }
-  .phase-hdr { padding: 12px 14px; gap: 8px; min-height: 48px; }
-  .phase-hdr .label { font-size: 0.95rem; }
-  .phase-body-inner { padding: 0 12px 12px; }
-  .sub-hdr { padding: 10px 12px; gap: 8px; }
-  .sub-body-inner { padding: 8px 10px 12px; }
-
-  /* Section blocks */
-  .section-block { padding: 10px; margin-top: 10px; }
-  .section-block[data-collapsible] > .sec-title { padding: 10px; }
-  .section-block[data-collapsible] > .collapsible-content { padding: 0 10px 10px; }
-  .bookmark-btn { font-size: 1.2rem; padding: 8px; }
-
-  /* Typography */
-  ul, ol { padding-left: 14px; }
-  ol li { padding-left: 26px; }
-  ol li::before { width: 18px; height: 18px; font-size: 0.65rem; }
-  th, td { padding: 6px 8px; font-size: 0.8rem; }
-  .decision-tree { padding: 10px; font-size: 0.78rem; }
-
-  /* Touch targets */
-  .toggle-group button { padding: 8px 16px; min-height: 40px; }
-  .role-select, .jurisdiction-select { min-height: 40px; padding: 8px 14px; }
-  .sidebar a { padding: 10px 16px 10px 24px; min-height: 40px; }
-  .sidebar a.sub { padding-left: 38px; }
-  .sidebar-toggle { width: 48px; height: 48px; font-size: 1.2rem; }
-
-  /* Flowchart */
-  .flowchart-container { padding: 8px 4px; border-radius: var(--radius); }
-
-  /* Table scroll with indicator shadows */
-  table {
-    display: block;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+  :root {
+    --gutter: 14px;
+    --appbar-h: 52px;
+    --stepper-h: 46px;
   }
 
-  /* Modal */
-  .modal { width: 95%; max-height: 85vh; padding: 16px; border-radius: var(--radius); }
+  .main-content { padding-bottom: calc(var(--sp-8) + env(safe-area-inset-bottom, 0px)); }
+
+  /* App bar: brand shrinks to the mark, phase readout takes the space */
+  .appbar-brand .name { display: none; }
+  .appbar-phase { font-size: 0.82rem; }
+
+  /* Stepper: numbers only, current step keeps its label.
+     Keeps all five reachable without a horizontal scroll hunt. */
+  .stepper { padding-top: var(--sp-1); padding-bottom: var(--sp-1); }
+  .stepper-step {
+    flex: 0 0 auto;
+    justify-content: center;
+    padding: var(--sp-2);
+    min-width: 40px;
+    min-height: 40px;
+  }
+  .stepper-step .name { display: none; }
+  .stepper-step[aria-current="step"] { flex: 1 1 auto; }
+  .stepper-step[aria-current="step"] .name { display: block; }
+
+  /* Headings & cards */
+  .page-header { padding: var(--sp-4) 0 var(--sp-3); }
+  .phase-tab-header { padding: var(--sp-1) 0 var(--sp-2); gap: var(--sp-2); }
+  .phase-tab-header .icon { font-size: 1.25rem; }
+  .phase-hdr { padding: var(--sp-3); gap: var(--sp-2); }
+  .phase-body-inner { padding: 0 var(--sp-3) var(--sp-3); }
+  .section-block { padding: var(--sp-3); margin-top: var(--sp-3); }
+  .section-block .sec-title { font-size: 0.75rem; }
+
+  /* Jump chips: one swipeable row rather than five stacked ones, so the
+     guidance itself stays above the fold. */
+  .jump-chips {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    margin-left: calc(var(--gutter) * -1);
+    margin-right: calc(var(--gutter) * -1);
+    padding: 0 var(--gutter) var(--sp-1);
+  }
+  .jump-chips::-webkit-scrollbar { display: none; }
+  .jump-chip { flex: 0 0 auto; }
+  .jump-chip.chip-action { margin-left: 0; }
+
+  /* Lists */
+  ul, ol { padding-left: var(--sp-2); }
+  ol li { padding-left: 26px; }
+  ol li::before { width: 18px; height: 18px; font-size: 0.65rem; }
+  th, td { padding: 6px var(--sp-2); font-size: 0.78rem; }
+  .decision-tree { padding: var(--sp-3); font-size: 0.72rem; line-height: 1.7; }
+
+  /* Notes */
+  .phase-notes textarea { width: calc(100% - var(--sp-6)); margin: 0 var(--sp-3) var(--sp-3); }
+
+  /* Pager stacks so both targets stay full-width taps */
+  .phase-pager { flex-direction: column; }
+  .pager-btn.next { text-align: left; }
+
+  /* Glossary goes single column */
+  .glossary-list { grid-template-columns: 1fr; }
+
+  /* Modal sits at the bottom, within thumb reach */
+  .modal-overlay { align-items: flex-end; padding: 0; }
+  .modal {
+    max-width: none;
+    max-height: 85vh;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    padding: var(--sp-5);
+    padding-bottom: calc(var(--sp-5) + env(safe-area-inset-bottom, 0px));
+  }
 }
 
-/* --- Small phones --- */
+/* ==========================================================================
+   SMALL PHONE
+   ========================================================================== */
 @media (max-width: 400px) {
-  .toggle-group button { padding: 6px 10px; font-size: 0.75rem; }
-  .main-content { padding: 0 6px 40px; }
-  .phase-hdr .icon { font-size: 1.1rem; }
-  .phase-hdr { gap: 6px; padding: 10px; }
-  .page-header { padding: 16px 0 10px; }
-  h2 { font-size: 1.05rem; }
+  :root { --gutter: 10px; }
+  .toggle-group button { padding: 8px var(--sp-2); font-size: 0.74rem; }
+  .phase-tab-header .label { font-size: 1rem; }
+  .jump-chip { font-size: 0.71rem; padding: 6px var(--sp-2); }
+  h2 { font-size: 1.02rem; }
   h3 { font-size: 0.92rem; }
 }
 
-/* --- Landscape phones --- */
+/* ==========================================================================
+   LANDSCAPE PHONE — vertical space is the scarce resource
+   ========================================================================== */
 @media (max-height: 500px) and (orientation: landscape) {
-  .page-header { padding: 12px 0 8px; }
-  .page-header h1 { font-size: 1.1rem; }
-  html { scroll-padding-top: 20px; }
+  :root { --appbar-h: 46px; --stepper-h: 42px; }
+  .page-header { padding: var(--sp-2) 0; }
+  .page-header .subtitle { display: none; }
+  .stepper-step { min-height: 34px; }
+  .modal { max-height: 92vh; }
 }
 
-/* Safe area support for notched devices */
-@supports (padding: env(safe-area-inset-bottom)) {
-  .sidebar { padding-bottom: calc(80px + env(safe-area-inset-bottom)); }
-  .sidebar-toggle { top: calc(12px + env(safe-area-inset-top)); left: calc(12px + env(safe-area-inset-left)); }
-  .main-content { padding-bottom: calc(60px + env(safe-area-inset-bottom)); }
-}
-
-/* Print styles */
+/* ==========================================================================
+   PRINT — one continuous document, no chrome
+   ========================================================================== */
 @media print {
-  .sidebar, .sidebar-toggle, .sidebar-overlay, .flowchart-container,
-  .bookmark-btn, .phase-notes { display: none !important; }
-  .main-content { margin-left: 0; max-width: 100%; }
-  .phase-tab { display: block !important; }
-  .section-block[data-collapsible].collapsed > .collapsible-content {
-    max-height: none !important;
-    opacity: 1;
+  .appbar, .sidebar, .sidebar-overlay, .stepper, .jump-chips,
+  .flowmap, .bookmark-btn, .phase-notes, .phase-pager, .skip-link {
+    display: none !important;
   }
+  .layout { padding-top: 0; display: block; }
+  .main-content { margin-left: 0; padding: 0; }
+  .content-wrap { max-width: 100%; }
+  .phase-tab { display: block !important; page-break-before: always; }
+  .phase-tab:first-of-type { page-break-before: avoid; }
+  .phase-body { max-height: none !important; overflow: visible !important; }
+  .section-block { break-inside: avoid; }
+  .decision-tree { white-space: pre-wrap; }
+  a[href^="#"]::after { content: ''; }
+}
+
+/* ==========================================================================
+   HIGH CONTRAST / FORCED COLORS
+   ========================================================================== */
+@media (prefers-contrast: more) {
+  :root { --text-secondary: #cbd5e1; --text-muted: #94a3b8; --border: #475569; }
+  [data-theme="light"] { --text-secondary: #374151; --text-muted: #4b5563; --border: #9ca3af; }
+  body.role-judge .section-block,
+  body.role-prosecution .section-block,
+  body.role-defense .section-block { opacity: 1 !important; }
 }

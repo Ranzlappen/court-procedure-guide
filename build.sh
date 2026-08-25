@@ -1,7 +1,11 @@
 #!/bin/bash
+# Rebuilds index.html from the content/ partials.
+# index.html is a build artifact — edit the partials, never index.html directly.
+set -e
+cd "$(dirname "$0")"
 cat content/head.html \
-    content/sidebar.html \
     content/topbar.html \
+    content/sidebar.html \
     content/main-open.html \
     content/flowchart.html \
     content/phase1.html \

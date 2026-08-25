@@ -1,68 +1,136 @@
 /* ==========================================================================
-   TOP BAR: Disclaimer + Controls + Search + Phase Progress
+   CONTROLS: filters, search, phase stepper
+   (Filename kept as topbar.css so the service-worker precache list and the
+   <head> stylesheet order stay stable.)
    ========================================================================== */
-.top-bar {
+
+/* --------------------------------------------------------------------------
+   PHASE STEPPER — the persistent "you are here" for a 5-stage process.
+   Sticky under the app bar on every breakpoint.
+   -------------------------------------------------------------------------- */
+.stepper {
   position: sticky;
-  top: 0;
+  top: calc(var(--appbar-h) + env(safe-area-inset-top, 0px));
   z-index: 150;
-  background: var(--bg-nav);
-  border-bottom: 1px solid var(--border);
-  margin-left: var(--sidebar-w);
-  padding: 10px 24px;
-}
-
-/* Legal disclaimer banner */
-.disclaimer {
-  background: var(--clr-objection-bg);
-  border: 1px solid rgba(252,165,165,0.3);
-  border-radius: var(--radius);
-  padding: 10px 16px;
-  font-size: 0.82rem;
-  color: var(--clr-objection);
-  margin-bottom: 10px;
-  line-height: 1.5;
-  text-align: center;
-}
-
-/* Controls row */
-.controls-row {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  gap: var(--sp-1);
+  padding: var(--sp-2) 0;
+  margin: 0 calc(var(--gutter) * -1) var(--sp-5);
+  padding-left: var(--gutter);
+  padding-right: var(--gutter);
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.stepper::-webkit-scrollbar { display: none; }
+
+.stepper-step {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
   align-items: center;
-  margin-bottom: 10px;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  font-family: var(--font);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color var(--transition), color var(--transition), background var(--transition);
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  min-height: 40px;
+}
+.stepper-step:hover { border-color: var(--accent); color: var(--accent); }
+
+.stepper-step .num {
+  flex-shrink: 0;
+  width: 20px; height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+.stepper-step .name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* Toggle buttons (Criminal/Civil, Dark/Light) */
+.stepper-step[aria-current="step"] {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.stepper-step[aria-current="step"] .num {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-contrast);
+}
+
+/* A phase ticked off in the progress tracker gets a check instead of a number */
+.stepper-step.done .num::after { content: '\2713'; }
+.stepper-step.done .num { color: var(--accent); border-color: var(--accent); }
+.stepper-step.done .num > span { display: none; }
+
+/* --------------------------------------------------------------------------
+   FILTER CONTROLS (live in the sidebar)
+   -------------------------------------------------------------------------- */
+.control-group { display: flex; flex-direction: column; gap: var(--sp-1); }
+.control-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-muted);
+}
+
+/* Segmented toggles (Criminal/Civil, Dark/Light) */
 .toggle-group {
-  display: inline-flex;
-  border-radius: 20px;
+  display: flex;
+  border-radius: var(--radius-pill);
   overflow: hidden;
   border: 1px solid var(--border);
-  font-size: 0.8rem;
+  background: var(--bg-card);
 }
 .toggle-group button {
-  padding: 6px 14px;
+  flex: 1;
+  padding: 8px var(--sp-3);
+  min-height: 38px;
   border: none;
   background: transparent;
   color: var(--text-secondary);
   cursor: pointer;
   font-family: var(--font);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 600;
-  transition: all var(--transition);
+  transition: background var(--transition), color var(--transition);
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 }
-.toggle-group button.active {
+.toggle-group button:hover { color: var(--accent); }
+.toggle-group button.active,
+.toggle-group button[aria-pressed="true"] {
   background: var(--accent);
-  color: var(--bg);
+  color: var(--accent-contrast);
 }
 
-/* Role selector */
-.role-select {
-  padding: 6px 12px;
-  border-radius: 20px;
+/* Dropdowns */
+.role-select,
+.jurisdiction-select {
+  width: 100%;
+  padding: 8px var(--sp-3);
+  min-height: 38px;
+  border-radius: var(--radius);
   border: 1px solid var(--border);
   background: var(--bg-card);
   color: var(--text);
@@ -71,85 +139,73 @@
   font-weight: 600;
   cursor: pointer;
 }
-.role-select:focus { outline: 2px solid var(--accent); }
 
-/* Jurisdiction selector */
-.jurisdiction-select {
-  padding: 6px 12px;
-  border-radius: 20px;
-  border: 1px solid var(--border);
-  background: var(--bg-card);
-  color: var(--text);
-  font-family: var(--font);
-  font-size: 0.78rem;
-  font-weight: 600;
-  cursor: pointer;
-  width: 100%;
-}
-.jurisdiction-select:focus { outline: 2px solid var(--accent); }
-
-/* Search bar */
-.search-bar {
-  flex: 1;
-  min-width: 180px;
-  position: relative;
-}
+/* --------------------------------------------------------------------------
+   SEARCH
+   -------------------------------------------------------------------------- */
+.search-bar { position: relative; width: 100%; }
 .search-bar input {
   width: 100%;
-  padding: 7px 14px 7px 36px;
-  border-radius: 20px;
+  padding: 8px 68px 8px 34px;
+  min-height: 38px;
+  border-radius: var(--radius-pill);
   border: 1px solid var(--border);
   background: var(--bg-card);
   color: var(--text);
   font-family: var(--font);
   font-size: 0.85rem;
 }
-.search-bar input:focus { outline: 2px solid var(--accent); }
+.search-bar input::placeholder { color: var(--text-muted); }
 .search-bar::before {
   content: '\1F50D';
   position: absolute;
-  left: 12px; top: 50%;
+  left: var(--sp-3); top: 50%;
   transform: translateY(-50%);
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   pointer-events: none;
-}
-.search-bar .clear-search {
-  position: absolute;
-  right: 8px; top: 50%;
-  transform: translateY(-50%);
-  background: none; border: none;
-  color: var(--text-muted);
-  cursor: pointer;
-  font-size: 1rem;
-  display: none;
+  opacity: 0.7;
 }
 
-/* Phase progress bar */
-.phase-progress {
-  display: flex;
-  gap: 4px;
-}
-.phase-progress button {
-  flex: 1;
-  padding: 6px 4px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--bg-card);
-  color: var(--text-secondary);
-  font-family: var(--font);
-  font-size: 0.72rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all var(--transition);
+/* Live match count, e.g. "12 hits" */
+.search-count {
+  position: absolute;
+  right: 34px; top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  pointer-events: none;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
 }
-.phase-progress button:hover { border-color: var(--accent); color: var(--accent); }
-.phase-progress button.active {
-  background: var(--accent-dim);
-  border-color: var(--accent);
-  color: var(--accent);
+.search-count:empty { display: none; }
+
+.search-bar .clear-search {
+  position: absolute;
+  right: var(--sp-1); top: 50%;
+  transform: translateY(-50%);
+  width: 28px; height: 28px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  border-radius: 50%;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.95rem;
 }
+.search-bar .clear-search:hover { color: var(--text); background: var(--bg-card-hover); }
+.search-bar.has-query .clear-search { display: flex; }
+
+/* No-results notice under the search field */
+.search-empty {
+  display: none;
+  padding: var(--sp-2) var(--sp-3);
+  margin-top: var(--sp-2);
+  border-radius: var(--radius);
+  background: var(--clr-objection-bg);
+  border: 1px solid rgba(252,165,165,0.25);
+  color: var(--clr-objection);
+  font-size: 0.76rem;
+}
+.search-empty.show { display: block; }
